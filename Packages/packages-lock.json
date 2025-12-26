@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.khyperia.nativefilebrowser": {
+      "version": "https://github.com/khyperia/NativeFileBrowser.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b31dc6a6d8ccc6158d662c95d76e4a583c2e411e"
+    },
     "com.unity.ai.navigation": {
       "version": "2.0.9",
       "depth": 0,
