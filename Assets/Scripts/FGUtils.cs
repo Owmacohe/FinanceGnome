@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using UnityEngine;
 
 public static class FGUtils
 {
@@ -15,7 +17,7 @@ public static class FGUtils
             .Where(c => whitelist.Contains(c)));
     }
 
-    public static string FormatNumber(float value)
+    public static string FormatLargeNumber(float value)
     {
         var split = value.ToString().Split('.');
         var dollars = "";
@@ -27,6 +29,26 @@ public static class FGUtils
             dollars = dollars.Insert(0, split[0][split[0].Length - 1 - i].ToString());
         }
 
-        return split.Length > 1 ? $"${dollars}.{split[1]}" : $"${dollars}";
+        return split.Length > 1 ? $"{dollars}.{split[1]}" : $"{dollars}.00";
+    }
+    
+    public static string DateToString(DateTime value) => $"{value.Day:00}/{value.Month:00}/{value.Year:0000}";
+    
+    public static DateTime TryParseDateTime(string value, DateTime fallback)
+    {
+        try
+        {
+            var split = value.Split('/');
+
+            return new DateTime(
+                int.Parse(split[2]),
+                int.Parse(split[1]),
+                int.Parse(split[0]));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
+            return fallback;
+        }
     }
 }

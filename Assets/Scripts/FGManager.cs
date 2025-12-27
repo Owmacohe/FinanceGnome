@@ -15,15 +15,20 @@ public class FGManager : MonoBehaviour
     [SerializeField] List<Button> splashScreenButtons;
 
     [Header("Transactions Screen")]
+    [SerializeField] GameObject transactionsScreen;
     [SerializeField] Transform transactionsParent;
     [SerializeField] FGTransactionController transactionPrefab;
     
     string defaultDatabaseName = "New Document";
-    FGDatabase database;
+    public static FGDatabase Database;
+
+    const string RECENT_PATH = "recentPath";
+
+    int addEntriesAmount = 1;
     
     void Start()
     {
-        database = new(defaultDatabaseName);
+        Database = new(defaultDatabaseName);
         CheckRecentDatabase();
     }
     
@@ -35,7 +40,7 @@ public class FGManager : MonoBehaviour
     {
         name = FGUtils.FormatString(name.ToLower(), $"{FGUtils.ALPHANUMERIC} ");
                 
-        database.Name = string.IsNullOrEmpty(name) ? defaultDatabaseName : name;
+        Database.Name = string.IsNullOrEmpty(name) ? defaultDatabaseName : name;
         newDatabaseName.SetTextWithoutNotify(name);
     }
 
@@ -50,13 +55,13 @@ public class FGManager : MonoBehaviour
         if (string.IsNullOrEmpty(path)) Debug.LogError("Path is null");
         else
         {
-            var fullPath = $"{path}/{database.Name}.fg";
+            var fullPath = $"{path}/{Database.Name}.fg";
             Save(fullPath);
             
-            PlayerPrefs.SetString("recentPath", fullPath);
+            PlayerPrefs.SetString(RECENT_PATH, fullPath);
             CheckRecentDatabase();
 
-            LoadTransactions();
+            InstantiateTransactions();
         }
         
         Invoke(nameof(EnableSplashScreenButtons), 0.1f);
@@ -68,9 +73,9 @@ public class FGManager : MonoBehaviour
 
     void CheckRecentDatabase()
     {
-        if (PlayerPrefs.HasKey("recentPath"))
+        if (PlayerPrefs.HasKey(RECENT_PATH))
         {
-            var path = PlayerPrefs.GetString("recentPath");
+            var path = PlayerPrefs.GetString(RECENT_PATH);
             
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
@@ -90,8 +95,8 @@ public class FGManager : MonoBehaviour
     {
         Debug.Log("Opening recent database...");
         
-        if (PlayerPrefs.HasKey("recentPath"))
-            Load(PlayerPrefs.GetString("recentPath"));
+        if (PlayerPrefs.HasKey(RECENT_PATH))
+            Load(PlayerPrefs.GetString(RECENT_PATH), true);
     }
     
     #endregion
@@ -110,9 +115,9 @@ public class FGManager : MonoBehaviour
         else if (!path.Substring(path.IndexOf('.')).Equals(".fg")) Debug.LogError("File is not of a valid file type");
         else
         {
-            Load(path);
+            Load(path, true);
             
-            PlayerPrefs.SetString("recentPath", path);
+            PlayerPrefs.SetString(RECENT_PATH, path);
             CheckRecentDatabase();
         }
         
@@ -128,20 +133,42 @@ public class FGManager : MonoBehaviour
     
     #region Transations Screen
 
-    void LoadTransactions()
+    void InstantiateTransactions()
     {
         splashScreen.SetActive(false);
+        transactionsScreen.SetActive(true);
+
+        for (int i = 0; i < Database.Entries.Count; i++)
+            AddTransaction(Database.Entries[i], i + 1);
+    }
+
+    void AddTransaction(FGEntry entry, int lineNumber) =>
+        Instantiate(transactionPrefab, transactionsParent)
+            .Initialize(lineNumber, entry, () => Save());
+
+    public void SetAddEntriesAmount(string amount) =>
+        addEntriesAmount = !string.IsNullOrEmpty(amount) && int.Parse(amount) > 0 ? int.Parse(amount) : 1;
+
+    public void AddEntries()
+    {
+        for (int i = 0; i < addEntriesAmount; i++)
+        {
+            var entry = new FGEntry(DateTime.Today);
+            Database.Entries.Add(entry);
+            AddTransaction(entry, Database.Entries.Count);
+        }
         
-        for (int i = 0; i < database.Entries.Count; i++)
-            Instantiate(transactionPrefab, transactionsParent).Initialize(i+1, database.Entries[i]);
+        Save();
     }
     
     #endregion
     
     #region IO
 
-    void Save(string path)
+    void Save(string path = null)
     {
+        if (path == null) path = PlayerPrefs.GetString(RECENT_PATH);
+        
         Debug.Log("Saving...");
         
         if (string.IsNullOrEmpty(path))
@@ -150,17 +177,17 @@ public class FGManager : MonoBehaviour
             return;
         }
         
-        if (database == null)
+        if (Database == null)
         {
             Debug.LogError("Database is null");
             return;
         }
         
-        File.WriteAllText(path, database.ToString());
-        Debug.Log($"Saved {database.Name} to {path}");
+        File.WriteAllText(path, Database.ToString());
+        Debug.Log($"Saved {Database.Name} to {path}");
     }
     
-    void Load(string path)
+    void Load(string path, bool thenSave = false)
     {
         Debug.Log("Loading...");
         
@@ -177,11 +204,13 @@ public class FGManager : MonoBehaviour
         }
         
         var file = path.Substring(path.LastIndexOf('/') + 1);
-        database = new FGDatabase(file.Substring(0, file.Length - 3), File.ReadAllText(path));
+        Database = new FGDatabase(file.Substring(0, file.Length - 3), File.ReadAllText(path));
         
-        Debug.Log($"Loaded {database.Name} from {path}");
+        Debug.Log($"Loaded {Database.Name} from {path}");
         
-        LoadTransactions();
+        InstantiateTransactions();
+        
+        if (thenSave) Save(path);
     }
     
     #endregion

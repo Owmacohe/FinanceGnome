@@ -15,20 +15,38 @@ public class FGEntry
     {
         var split = Split(entry);
         if (split.Count != 7) return;
-        
-        var dateSplit = split[0].Split('/');
-        if (dateSplit.Length != 3) return;
 
-        Date = new DateTime(
-            int.Parse(dateSplit[2]),
-            int.Parse(dateSplit[1]),
-            int.Parse(dateSplit[0])); // TODO: error catching
-        Description = split[1];
-        Value = float.Parse(split[2]); // TODO: error catching
-        IsCost = bool.Parse(split[3]); // TODO: error catching
-        Category = split[4];
-        Note = split[5];
-        Ignore = bool.Parse(split[6]); // TODO: error catching
+        var dateFormatted = FGUtils.FormatString(split[0], DATE_WHITELIST);
+        Date = FGUtils.TryParseDateTime(dateFormatted, DateTime.Today);
+        
+        var descriptionFormatted = FGUtils.FormatString(split[1], DESCRIPTION_WHITELIST);
+        Description = descriptionFormatted;
+        
+        var valueFormatted = FGUtils.FormatString(split[2], VALUE_WHITELIST);
+        if (float.TryParse(valueFormatted, out float outValue)) Value = outValue;
+        
+        var isCostFormatted = FGUtils.FormatString(split[3], BOOL_WHITELIST);
+        IsCost = !bool.TryParse(isCostFormatted, out bool outIsCost) || outIsCost;
+        
+        var categoryFormatted = FGUtils.FormatString(split[4], DESCRIPTION_WHITELIST);
+        Category = categoryFormatted;
+        
+        var noteFormatted = FGUtils.FormatString(split[5], DESCRIPTION_WHITELIST);
+        Note = noteFormatted;
+        
+        var ignoreFormatted = FGUtils.FormatString(split[6], BOOL_WHITELIST);
+        if (bool.TryParse(ignoreFormatted, out bool outIgnore)) Ignore = outIgnore;
+    }
+
+    public FGEntry(DateTime date, string description = "", float value = 0, bool isCost = true, string category = "", string note = "", bool ignore = false)
+    {
+        Date = date;
+        Description = description;
+        Value = value;
+        IsCost = isCost;
+        Category = category;
+        Note = note;
+        Ignore = ignore;
     }
 
     List<string> Split(string s, char separator = ',', char exception = '"')
@@ -45,15 +63,18 @@ public class FGEntry
 
         return split;
     }
-
-    public string DateToString() => $"{Date.Day}/{Date.Month}/{Date.Year}";
     
     public override string ToString() =>
-        $"{DateToString()}," +
+        $"{FGUtils.DateToString(Date)}," +
         $"{Description}," +
         $"{Value}," +
         $"{IsCost}," +
         $"{Category}," +
         $"{Note}," +
         $"{Ignore}";
+
+    public static string DATE_WHITELIST => $"/{FGUtils.NUMERIC}";
+    public static string DESCRIPTION_WHITELIST => $"{FGUtils.ALPHANUMERIC}{FGUtils.SPECIAL}";
+    public static string VALUE_WHITELIST => $".{FGUtils.NUMERIC}";
+    public static string BOOL_WHITELIST => FGUtils.ALPHANUMERIC;
 }

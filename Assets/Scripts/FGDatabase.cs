@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 public class FGDatabase
 {
@@ -14,6 +15,19 @@ public class FGDatabase
         foreach (var i in entries.Split('\n'))
             if (!string.IsNullOrEmpty(i))
                 Entries.Add(new(i));
+    }
+
+    public string GetMatchingCategory(string value)
+    {
+        var matching = Entries
+            .Select(entry => entry.Category)
+            .Where(category =>
+                !string.IsNullOrEmpty(category) &&
+                category.Length >= value.Length &&
+                category.Substring(0, value.Length).ToLower() == value.ToLower())
+            .ToList();
+
+        return matching.Count > 0 ? matching[0] : null;
     }
 
     public override string ToString() => string.Join('\n', Entries);
