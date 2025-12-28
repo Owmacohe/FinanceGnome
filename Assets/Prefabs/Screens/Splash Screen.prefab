@@ -92,8 +92,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -229,8 +229,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -480,7 +480,7 @@ MonoBehaviour:
   m_HideSoftKeyboard: 0
   m_CharacterValidation: 0
   m_RegexValue: 
-  m_GlobalPointSize: 14
+  m_GlobalPointSize: 12
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -551,7 +551,7 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 135
+  m_PreferredWidth: 115
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
@@ -614,7 +614,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
-  m_Spacing: 5
+  m_Spacing: 4
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -763,6 +763,14 @@ PrefabInstance:
     - target: {fileID: 5385856616891629917, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_text
       value: New File
+      objectReference: {fileID: 0}
+    - target: {fileID: 5385856616891629917, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
+      propertyPath: m_fontSize
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5385856616891629917, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7156833598440020590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_AnchorMax.y
@@ -913,6 +921,14 @@ PrefabInstance:
       propertyPath: m_text
       value: Open File
       objectReference: {fileID: 0}
+    - target: {fileID: 5385856616891629917, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
+      propertyPath: m_fontSize
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5385856616891629917, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 7156833598440020590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1058,6 +1074,14 @@ PrefabInstance:
     - target: {fileID: 5385856616891629917, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_text
       value: Open Recent - <i>example.fg</i>
+      objectReference: {fileID: 0}
+    - target: {fileID: 5385856616891629917, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
+      propertyPath: m_fontSize
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5385856616891629917, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7156833598440020590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_AnchorMax.y

@@ -18,6 +18,8 @@ public class FGManager : MonoBehaviour
     [SerializeField] GameObject transactionsScreen;
     [SerializeField] Transform transactionsParent;
     [SerializeField] FGTransactionController transactionPrefab;
+
+    List<FGTransactionController> transactions = new();
     
     string defaultDatabaseName = "New Document";
     public static FGDatabase Database;
@@ -142,9 +144,24 @@ public class FGManager : MonoBehaviour
             AddTransaction(Database.Entries[i], i + 1);
     }
 
-    void AddTransaction(FGEntry entry, int lineNumber) =>
-        Instantiate(transactionPrefab, transactionsParent)
-            .Initialize(lineNumber, entry, () => Save());
+    void AddTransaction(FGEntry entry, int lineNumber)
+    {
+        var transaction = Instantiate(transactionPrefab, transactionsParent);
+        transaction.Initialize(lineNumber, entry, () => Save());
+        transactions.Add(transaction);
+        
+        transaction.OnRemove += entry =>
+        {
+            Database.Entries.Remove(entry);
+            Save();
+            
+            for (int i = transactions.IndexOf(transaction); i < transactions.Count; i++)
+                transactions[i].ModifyLineNumber(-1);
+
+            transactions.Remove(transaction);
+            Destroy(transaction.gameObject);
+        };
+    }
 
     public void SetAddEntriesAmount(string amount) =>
         addEntriesAmount = !string.IsNullOrEmpty(amount) && int.Parse(amount) > 0 ? int.Parse(amount) : 1;

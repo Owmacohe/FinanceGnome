@@ -20,17 +20,21 @@ public class FGTransactionController : MonoBehaviour
          categoryChanged,
          noteChanged;
 
+    int lineNumber;
     FGEntry entry;
     Action onSave;
 
     const string HIGHLIGHTER = "<mark=#A8CEFF>";
 
+    public Action<FGEntry> OnRemove;
+
     public void Initialize(int lineNumber, FGEntry entry, Action onSave)
     {
         this.entry = entry;
         this.onSave = onSave;
-        
-        line.text = lineNumber.ToString();
+
+        this.lineNumber = lineNumber;
+        ModifyLineNumber();
 
         date.text = FGUtils.DateToString(entry.Date);
         description.text = entry.Description;
@@ -39,6 +43,8 @@ public class FGTransactionController : MonoBehaviour
         category.text = entry.Category;
         note.text = entry.Note;
         ignore.isOn = entry.Ignore;
+        
+        #region Listeners
         
         date.onValueChanged.AddListener(_ => dateChanged = true);
         description.onValueChanged.AddListener(_ => descriptionChanged = true);
@@ -89,7 +95,11 @@ public class FGTransactionController : MonoBehaviour
             
             onSave?.Invoke();
         });
+        
+        #endregion
     }
+    
+    #region Setters
 
     void OnDateSet(string newValue)
     {
@@ -167,4 +177,14 @@ public class FGTransactionController : MonoBehaviour
             noteChanged = false;
         }
     }
+    
+    #endregion
+    
+    public void ModifyLineNumber(int amount = 0)
+    {
+        lineNumber += amount;
+        line.text = lineNumber.ToString();
+    }
+
+    public void Remove() => OnRemove?.Invoke(entry);
 }
