@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using NativeFileBrowser;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -178,21 +179,110 @@ public class FGManager : MonoBehaviour
 
     void InstantiateBalanceSheetCells()
     {
+        AddBlankBalanceSheetRow();
+        AddHeaderBalanceSheetRow("Costs");
+        AddCategoryEntries(true);
+
+        AddBlankBalanceSheetRow();
+        AddHeaderBalanceSheetRow("Income");
+        AddCategoryEntries(false);
+
+        AddBlankBalanceSheetRow();
+        AddBalanceBalanceSheetRow();
+    }
+    
+    void AddBlankBalanceSheetRow() => AddBalanceSheetRow((new string[15]).ToList());
+
+    void AddHeaderBalanceSheetRow(string header)
+    {
+        var temp = new string[15];
+        temp[0] = $"<b>{header}</b>";
+        
+        AddBalanceSheetRow(temp.ToList());
+    }
+
+    void AddCategoryEntries(bool costs)
+    {
+        var colourMax = costs ? Color.red : Color.green;
+        
         foreach (var i in Database.Categories)
         {
-            Instantiate(balanceSheetCell, balanceSheetParent).text = string.IsNullOrEmpty(i) ? "N/A" : i;
+            List<string> row = new();
 
-            var entries = Database.CategoryEntries(i, true);
+            var entries = Database.EntriesInCategory(i, costs);
+            if (entries.Count == 0 || Database.TotalForCategory(entries) == 0) continue;
+            
+            row.Add(string.IsNullOrEmpty(i) ? "N/A" : i);
 
             for (int j = 0; j < 12; j++)
-            {
-                Instantiate(balanceSheetCell, balanceSheetParent).text =
-                    FGUtils.FormatLargeNumber(Database.CategoryTotalForMonth(entries, j + 1));
-            }
+                row.Add(FGUtils.FormatLargeNumber(
+                    Database.TotalForMonthByCategory(entries, j + 1),
+                    true,
+                    colourMax,
+                    3000));
+            
+            row.Add(FGUtils.FormatLargeNumber(
+                Database.AverageForCategoryByWeek(entries),
+                true,
+                colourMax,
+                500));
+            
+            row.Add(FGUtils.FormatLargeNumber(
+                Database.AverageForCategoryByMonth(entries),
+                true,
+                colourMax,
+                2000));
 
-            Instantiate(balanceSheetCell, balanceSheetParent).text = FGUtils.FormatLargeNumber(Database.CategoryAverageByWeek(entries));
-            Instantiate(balanceSheetCell, balanceSheetParent).text = FGUtils.FormatLargeNumber(Database.CategoryAverageByMonth(entries));
+            AddBalanceSheetRow(row);
         }
+    }
+
+    void AddBalanceBalanceSheetRow()
+    {
+        List<string> row = new();
+            
+        row.Add("Balance");
+
+        for (int i = 0; i < 12; i++)
+        {
+            var incomeTotal = Database.TotalForMonth(i+1, false);
+            var costsTotal = Database.TotalForMonth(i+1, true);
+            float balance = incomeTotal - costsTotal;
+            
+            row.Add(FGUtils.FormatLargeNumber(
+                balance,
+                true,
+                balance >= 0 ? Color.green : Color.red,
+                10000));
+        }
+        
+        var weeklyTotal = Database.ValueTotal / 52f;
+        var monthlyTotal = Database.ValueTotal / 12f;
+        
+        row.Add(FGUtils.FormatLargeNumber(
+            weeklyTotal,
+            true,
+            weeklyTotal >= 0 ? Color.green : Color.red,
+            1000));
+        
+        row.Add(FGUtils.FormatLargeNumber(
+            monthlyTotal,
+            true,
+            monthlyTotal >= 0 ? Color.green : Color.red,
+            7500));
+            
+        AddBalanceSheetRow(row);
+    }
+
+    void AddBalanceSheetRow(List<string> row)
+    {
+        if (row.Count != 15)
+        {
+            Debug.LogError($"Row of size {row.Count} is not valid (must be of size 15)");
+        }
+        
+        foreach (var i in row)
+            Instantiate(balanceSheetCell, balanceSheetParent).text = string.IsNullOrEmpty(i) ? "" : i;
     }
     
     #endregion
@@ -208,13 +298,13 @@ public class FGManager : MonoBehaviour
     void AddTransaction(FGEntry entry, int lineNumber)
     {
         var transaction = Instantiate(transactionPrefab, transactionsParent);
-        transaction.Initialize(lineNumber, entry, () => Save());
+        transaction.Initialize(lineNumber, entry, () => OnValueChanged());
         transactions.Add(transaction);
         
         transaction.OnRemove += entry =>
         {
             Database.Entries.Remove(entry);
-            Save();
+            OnValueChanged();
             
             for (int i = transactions.IndexOf(transaction); i < transactions.Count; i++)
                 transactions[i].ModifyLineNumber(-1);
@@ -235,6 +325,13 @@ public class FGManager : MonoBehaviour
             Database.Entries.Add(entry);
             AddTransaction(entry, Database.Entries.Count);
         }
+        
+        OnValueChanged();
+    }
+
+    public void OnValueChanged()
+    {
+        // TODO: update entries specific to change
         
         Save();
     }
@@ -286,6 +383,7 @@ public class FGManager : MonoBehaviour
         
         Debug.Log($"Loaded {Database.Name} from {path}");
         
+        // TODO: clear old balance sheet
         // TODO: clear old transactions
         
         InstantiateBalanceSheetCells();
