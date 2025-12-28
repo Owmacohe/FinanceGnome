@@ -38,7 +38,7 @@ public class FGTransactionController : MonoBehaviour
 
         date.text = FGUtils.DateToString(entry.Date);
         description.text = entry.Description;
-        value.text = FGUtils.FormatLargeNumber(entry.Value);
+        value.text = FGUtils.FormatLargeNumber(entry.Value, false);
         isCost.isOn = entry.IsCost;
         category.text = entry.Category;
         note.text = entry.Note;
@@ -134,7 +134,7 @@ public class FGTransactionController : MonoBehaviour
         if (formatted == "") entry.Value = 0;
         else if (float.TryParse(formatted, out float outValue)) entry.Value = outValue;
         
-        value.SetTextWithoutNotify(FGUtils.FormatLargeNumber(entry.Value));
+        value.SetTextWithoutNotify(FGUtils.FormatLargeNumber(entry.Value, false));
 
         if (valueChanged)
         {

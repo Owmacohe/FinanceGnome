@@ -4,6 +4,14 @@ using UnityEngine;
 
 public static class FGUtils
 {
+    public static float RoundTo(float f, int decimalPoints)
+    {
+        float multiplier = Mathf.Pow(10, decimalPoints);
+        return Mathf.Round(f * multiplier) / multiplier;
+    }
+    
+    #region Formatting
+    
     public static string ALPHA => "abcdefghijklmnopqrstuvwxyz" +
                                   "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public static string NUMERIC => "0123456789";
@@ -17,8 +25,10 @@ public static class FGUtils
             .Where(c => whitelist.Contains(c)));
     }
 
-    public static string FormatLargeNumber(float value)
+    public static string FormatLargeNumber(float value, bool addDollarSign = true)
     {
+        value = RoundTo(value, 2);
+        
         var split = value.ToString().Split('.');
         var dollars = "";
 
@@ -29,8 +39,12 @@ public static class FGUtils
             dollars = dollars.Insert(0, split[0][split[0].Length - 1 - i].ToString());
         }
 
-        return split.Length > 1 ? $"{dollars}.{split[1]}" : $"{dollars}.00";
+        return split.Length > 1 ? $"{(addDollarSign ? "$" : "")}{dollars}.{split[1]}" : $"{(addDollarSign ? "$" : "")}{dollars}.00";
     }
+    
+    #endregion
+    
+    #region DateTime
     
     public static string DateToString(DateTime value) => $"{value.Day:00}/{value.Month:00}/{value.Year:0000}";
     
@@ -51,4 +65,6 @@ public static class FGUtils
             return fallback;
         }
     }
+    
+    #endregion
 }

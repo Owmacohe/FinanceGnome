@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NativeFileBrowser;
 using TMPro;
 using UnityEngine;
@@ -8,11 +9,21 @@ using UnityEngine.UI;
 
 public class FGManager : MonoBehaviour
 {
+    [Header("Top Bar")]
+    [SerializeField] GameObject topRow;
+    [SerializeField] Button balanceSheetButton;
+    [SerializeField] Button transactionsScreenButton;
+    
     [Header("Splash Screen")]
     [SerializeField] GameObject splashScreen;
     [SerializeField] TMP_InputField newDatabaseName;
     [SerializeField] Button openRecentDatabase;
     [SerializeField] List<Button> splashScreenButtons;
+
+    [Header("Balance Sheet Screen")]
+    [SerializeField] GameObject balanceSheetScreen;
+    [SerializeField] Transform balanceSheetParent;
+    [SerializeField] TMP_Text balanceSheetCell;
 
     [Header("Transactions Screen")]
     [SerializeField] GameObject transactionsScreen;
@@ -33,6 +44,34 @@ public class FGManager : MonoBehaviour
         Database = new(defaultDatabaseName);
         CheckRecentDatabase();
     }
+    
+    #region Top Row
+    
+    public void SetBalanceSheet()
+    {
+        balanceSheetButton.interactable = false;
+        transactionsScreenButton.interactable = true;
+        
+        balanceSheetScreen.SetActive(true);
+        transactionsScreen.SetActive(false);
+        
+        topRow.SetActive(true);
+        splashScreen.SetActive(false);
+    }
+    
+    public void SetTransactions()
+    {
+        balanceSheetButton.interactable = true;
+        transactionsScreenButton.interactable = false;
+
+        balanceSheetScreen.SetActive(false);
+        transactionsScreen.SetActive(true);
+        
+        topRow.SetActive(true);
+        splashScreen.SetActive(false);
+    }
+    
+    #endregion
     
     #region Splash Screen
     
@@ -63,7 +102,9 @@ public class FGManager : MonoBehaviour
             PlayerPrefs.SetString(RECENT_PATH, fullPath);
             CheckRecentDatabase();
 
+            InstantiateBalanceSheetCells();
             InstantiateTransactions();
+            SetBalanceSheet();
         }
         
         Invoke(nameof(EnableSplashScreenButtons), 0.1f);
@@ -133,13 +174,33 @@ public class FGManager : MonoBehaviour
     
     #endregion
     
+    #region Balance Sheet Screen
+
+    void InstantiateBalanceSheetCells()
+    {
+        foreach (var i in Database.Categories)
+        {
+            Instantiate(balanceSheetCell, balanceSheetParent).text = string.IsNullOrEmpty(i) ? "N/A" : i;
+
+            var entries = Database.CategoryEntries(i, true);
+
+            for (int j = 0; j < 12; j++)
+            {
+                Instantiate(balanceSheetCell, balanceSheetParent).text =
+                    FGUtils.FormatLargeNumber(Database.CategoryTotalForMonth(entries, j + 1));
+            }
+
+            Instantiate(balanceSheetCell, balanceSheetParent).text = FGUtils.FormatLargeNumber(Database.CategoryAverageByWeek(entries));
+            Instantiate(balanceSheetCell, balanceSheetParent).text = FGUtils.FormatLargeNumber(Database.CategoryAverageByMonth(entries));
+        }
+    }
+    
+    #endregion
+    
     #region Transations Screen
 
     void InstantiateTransactions()
     {
-        splashScreen.SetActive(false);
-        transactionsScreen.SetActive(true);
-
         for (int i = 0; i < Database.Entries.Count; i++)
             AddTransaction(Database.Entries[i], i + 1);
     }
@@ -225,7 +286,11 @@ public class FGManager : MonoBehaviour
         
         Debug.Log($"Loaded {Database.Name} from {path}");
         
+        // TODO: clear old transactions
+        
+        InstantiateBalanceSheetCells();
         InstantiateTransactions();
+        SetBalanceSheet();
         
         if (thenSave) Save(path);
     }
