@@ -92,11 +92,15 @@ public class FGTransactionController : MonoBehaviour
         {
             entry.Ignore = newValue;
             ignore.SetIsOnWithoutNotify(entry.Ignore);
+
+            IgnoreCheck();
             
             onSave?.Invoke();
         });
         
         #endregion
+        
+        IgnoreCheck();
     }
     
     #region Setters
@@ -179,6 +183,16 @@ public class FGTransactionController : MonoBehaviour
     }
     
     #endregion
+
+    void IgnoreCheck()
+    {
+        date.interactable = !entry.Ignore;
+        description.interactable = !entry.Ignore;
+        value.interactable = !entry.Ignore;
+        isCost.interactable = !entry.Ignore;
+        category.interactable = !entry.Ignore;
+        note.interactable = !entry.Ignore;
+    }
     
     public void ModifyLineNumber(int amount = 0)
     {

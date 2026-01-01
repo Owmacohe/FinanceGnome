@@ -29,7 +29,7 @@ public static class FGUtils
     public static string ALPHA => "abcdefghijklmnopqrstuvwxyz" +
                                   "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public static string NUMERIC => "0123456789";
-    public static string SPECIAL => "!@#$%^&*()-_=+[]{}\\|;:<>./? ";
+    public static string SPECIAL => "!@#$%^&*()-_=+[]{}\\|;:<>.? ";
     public static string ALPHANUMERIC => ALPHA + NUMERIC;
     
     public static string FormatString(string s, string whitelist, string blacklist = "", string remove = "")
@@ -68,7 +68,7 @@ public static class FGUtils
         }
         
         return split.Length > 1
-            ? $"{(addDollarSign ? "$" : "")}{dollars}.{split[1]}"
+            ? $"{(addDollarSign ? "$" : "")}{dollars}.{split[1].PadRight(2, '0')}"
             : $"{(addDollarSign ? "$" : "")}{dollars}.00";
     }
     
@@ -82,12 +82,24 @@ public static class FGUtils
     {
         try
         {
-            var split = value.Split('/');
-
-            return new DateTime(
-                int.Parse(split[2]),
-                int.Parse(split[1]),
-                int.Parse(split[0]));
+            if (value.Contains('/'))
+            {
+                var split = value.Split('/');
+            
+                return new DateTime(
+                    int.Parse(split[2]),
+                    int.Parse(split[1]),
+                    int.Parse(split[0]));   
+            }
+            else
+            {
+                var split = value.Split('-');
+            
+                return new DateTime(
+                    int.Parse(split[0]),
+                    int.Parse(split[1]),
+                    int.Parse(split[2]));   
+            }
         }
         catch (Exception e)
         {

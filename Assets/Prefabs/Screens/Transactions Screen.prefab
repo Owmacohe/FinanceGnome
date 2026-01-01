@@ -1240,7 +1240,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8170980806264061159, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_Name
-      value: Button
+      value: Import
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

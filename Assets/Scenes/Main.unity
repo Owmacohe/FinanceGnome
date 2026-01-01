@@ -1212,6 +1212,22 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: -1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 2775565551464242999, guid: 869b2001c3dea47379aed2f362551f94, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 288685780}
+    - target: {fileID: 2775565551464242999, guid: 869b2001c3dea47379aed2f362551f94, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Import
+      objectReference: {fileID: 0}
+    - target: {fileID: 2775565551464242999, guid: 869b2001c3dea47379aed2f362551f94, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: FGManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2775565551464242999, guid: 869b2001c3dea47379aed2f362551f94, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3641266463733031087, guid: 869b2001c3dea47379aed2f362551f94, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1

@@ -19,9 +19,24 @@ public class FGDatabase
         Name = name;
         Entries = new();
         
+        Import(entries);
+    }
+
+    public List<FGEntry> Import(string entries)
+    {
+        List<FGEntry> temp = new();
+
         foreach (var i in entries.Split('\n'))
+        {
             if (!string.IsNullOrEmpty(i))
-                Entries.Add(new(i));
+            {
+                var entry = new FGEntry(i);
+                temp.Add(entry);
+                Entries.Add(entry);
+            }
+        }
+
+        return temp;
     }
     
     public string GetMatchingCategory(string value)

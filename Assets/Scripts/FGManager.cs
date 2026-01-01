@@ -32,6 +32,7 @@ public class FGManager : MonoBehaviour
     [SerializeField] FGTransactionController transactionPrefab;
 
     List<FGTransactionController> transactions = new();
+    bool transactionsChanged;
     
     string defaultDatabaseName = "New Document";
     public static FGDatabase Database;
@@ -58,6 +59,16 @@ public class FGManager : MonoBehaviour
         
         topRow.SetActive(true);
         splashScreen.SetActive(false);
+
+        if (transactionsChanged)
+        {
+            for (int i = 0; i < balanceSheetParent.childCount - 15; i++)
+                Destroy(balanceSheetParent.GetChild(15 + i).gameObject);
+        
+            InstantiateBalanceSheetCells();
+
+            transactionsChanged = false;
+        }
     }
     
     public void SetTransactions()
@@ -97,7 +108,12 @@ public class FGManager : MonoBehaviour
         if (string.IsNullOrEmpty(path)) Debug.LogError("Path is null");
         else
         {
+            #if UNITY_STANDALONE_WIN
+            var fullPath = $"{path}\\{Database.Name}.fg";
+            #else
             var fullPath = $"{path}/{Database.Name}.fg";
+            #endif
+            
             Save(fullPath);
             
             PlayerPrefs.SetString(RECENT_PATH, fullPath);
@@ -129,7 +145,12 @@ public class FGManager : MonoBehaviour
 
             openRecentDatabase.gameObject.SetActive(true);
             
+            #if UNITY_STANDALONE_WIN
+            var file = path.Substring(path.LastIndexOf('\\') + 1);
+            #else
             var file = path.Substring(path.LastIndexOf('/') + 1);
+            #endif
+            
             openRecentDatabase.GetComponentInChildren<TMP_Text>().text = $"Open Recent - <i>{file}</i>";
         }
         else openRecentDatabase.gameObject.SetActive(false);
@@ -201,9 +222,11 @@ public class FGManager : MonoBehaviour
         AddBalanceSheetRow(temp.ToList());
     }
 
-    void AddCategoryEntries(bool costs)
+    Dictionary<string, List<TMP_Text>> AddCategoryEntries(bool costs)
     {
         var colourMax = costs ? Color.red : Color.green;
+
+        Dictionary<string, List<TMP_Text>> temp = new();
         
         foreach (var i in Database.Categories)
         {
@@ -233,15 +256,17 @@ public class FGManager : MonoBehaviour
                 colourMax,
                 2000));
 
-            AddBalanceSheetRow(row);
+            temp.Add(i, AddBalanceSheetRow(row));
         }
+
+        return temp;
     }
 
-    void AddBalanceBalanceSheetRow()
+    List<TMP_Text> AddBalanceBalanceSheetRow()
     {
         List<string> row = new();
             
-        row.Add("Balance");
+        row.Add("<b>Balance</b>");
 
         for (int i = 0; i < 12; i++)
         {
@@ -271,18 +296,28 @@ public class FGManager : MonoBehaviour
             monthlyTotal >= 0 ? Color.green : Color.red,
             7500));
             
-        AddBalanceSheetRow(row);
+        return AddBalanceSheetRow(row);
     }
 
-    void AddBalanceSheetRow(List<string> row)
+    List<TMP_Text> AddBalanceSheetRow(List<string> row)
     {
         if (row.Count != 15)
         {
             Debug.LogError($"Row of size {row.Count} is not valid (must be of size 15)");
+            return null;
         }
-        
+
+        List<TMP_Text> temp = new();
+
         foreach (var i in row)
-            Instantiate(balanceSheetCell, balanceSheetParent).text = string.IsNullOrEmpty(i) ? "" : i;
+        {
+            var cell = Instantiate(balanceSheetCell, balanceSheetParent);
+            cell.text = string.IsNullOrEmpty(i) ? "" : i;
+            cell.name = cell.text;
+            temp.Add(cell);
+        }
+
+        return temp;
     }
     
     #endregion
@@ -331,7 +366,9 @@ public class FGManager : MonoBehaviour
 
     public void OnValueChanged()
     {
-        // TODO: update entries specific to change
+        Debug.Log("Transactions changed (balance sheet will reload when next shown)");
+        
+        transactionsChanged = true;
         
         Save();
     }
@@ -378,7 +415,12 @@ public class FGManager : MonoBehaviour
             return;
         }
         
+        #if UNITY_STANDALONE_WIN
+        var file = path.Substring(path.LastIndexOf('\\') + 1);
+        #else
         var file = path.Substring(path.LastIndexOf('/') + 1);
+        #endif
+        
         Database = new FGDatabase(file.Substring(0, file.Length - 3), File.ReadAllText(path));
         
         Debug.Log($"Loaded {Database.Name} from {path}");
@@ -391,6 +433,31 @@ public class FGManager : MonoBehaviour
         SetBalanceSheet();
         
         if (thenSave) Save(path);
+    }
+
+    public void Import()
+    {
+        Debug.Log("Importing...");
+        
+        DisableSplashScreenButtons();
+        
+        var path = FileBrowser.PickFile();
+        
+        if (string.IsNullOrEmpty(path)) Debug.LogError("Path is null");
+        else if (!path.Substring(path.IndexOf('.')).Equals(".csv")) Debug.LogError("File is not of a valid file type");
+        else
+        {
+            var entries = Database.Import(File.ReadAllText(path));
+
+            for (int i = 0; i < entries.Count; i++)
+                AddTransaction(entries[i], Database.Entries.Count - entries.Count + i + 1);
+            
+            OnValueChanged();
+            
+            Debug.Log($"Imported from {path}");
+        }
+        
+        Invoke(nameof(EnableSplashScreenButtons), 0.1f);
     }
     
     #endregion
