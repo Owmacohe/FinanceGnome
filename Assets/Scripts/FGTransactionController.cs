@@ -36,12 +36,13 @@ public class FGTransactionController : MonoBehaviour
         this.lineNumber = lineNumber;
         ModifyLineNumber();
 
-        date.text = FGUtils.DateToString(entry.Date);
-        description.text = entry.Description;
-        value.text = FGUtils.FormatLargeNumber(entry.Value, false);
+        OnDateSet(FGUtils.DateToString(entry.Date));
+        OnDescriptionSet(entry.Description);
+        OnValueSet(entry.Value.ToString());
+        OnCategorySet(entry.Category, false);
+        OnNoteSet(entry.Note);
+        
         isCost.isOn = entry.IsCost;
-        category.text = entry.Category;
-        note.text = entry.Note;
         ignore.isOn = entry.Ignore;
         
         #region Listeners
@@ -54,7 +55,7 @@ public class FGTransactionController : MonoBehaviour
             if (newValue.Contains(HIGHLIGHTER))
                 newValue = newValue.Remove(newValue.IndexOf(HIGHLIGHTER));
 
-            string matching = FGManager.Database.GetMatchingCategory(newValue);
+            string matching = FGManager.Instance.Database.GetMatchingCategory(newValue);
             category.SetTextWithoutNotify(
                 newValue +
                 (matching != null && !string.IsNullOrEmpty(newValue)
@@ -139,6 +140,11 @@ public class FGTransactionController : MonoBehaviour
         else if (float.TryParse(formatted, out float outValue)) entry.Value = outValue;
         
         value.SetTextWithoutNotify(FGUtils.FormatLargeNumber(entry.Value, false));
+        value.GetComponent<Image>().color = FGUtils.GraduatedColourLerp(
+            Color.white,
+            Color.HSVToRGB(entry.IsCost ? 0 : 0.33f, 0.5f, 1), 
+            entry.Value / 3000f,
+            6);
 
         if (valueChanged)
         {
@@ -154,7 +160,7 @@ public class FGTransactionController : MonoBehaviour
 
         if (setMatchingCategory && !string.IsNullOrEmpty(newValue))
         {
-            var matching = FGManager.Database.GetMatchingCategory(newValue);
+            var matching = FGManager.Instance.Database.GetMatchingCategory(newValue);
             if (matching != null) newValue = matching;
         }
         

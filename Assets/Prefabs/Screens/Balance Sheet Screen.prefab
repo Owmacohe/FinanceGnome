@@ -1451,6 +1451,7 @@ GameObject:
   - component: {fileID: 1364699719033925938}
   - component: {fileID: 2794649215982680242}
   - component: {fileID: 3422856112928049052}
+  - component: {fileID: 4214158481209475423}
   m_Layer: 5
   m_Name: Balance Sheet Screen
   m_TagString: Untagged
@@ -1517,6 +1518,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4214158481209475423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4529596396205929166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f42c729047cb4349a9c72d110b05b697, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FGBalanceSheetScreenPanel
+  balanceSheetParent: {fileID: 4056300641317145885}
+  balanceSheetCell: {fileID: 8463796683606757406, guid: 1f5712501a76e4b3b833d8924782e30f, type: 3}
 --- !u!1 &4715757627839848318
 GameObject:
   m_ObjectHideFlags: 0
