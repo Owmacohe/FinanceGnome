@@ -1,9 +1,25 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public static class FGUtils
 {
+    public static List<string> Split(string s, char separator = ',', char exception = '"')
+    {
+        List<string> split = new List<string> {""};
+        bool excepted = false;
+
+        foreach (var i in s.Trim())
+        {
+            if (i == exception) excepted = !excepted;
+            else if (i == separator && !excepted) split.Add("");
+            else split[^1] += i;
+        }
+
+        return split;
+    }
+    
     public static float RoundTo(float f, int decimalPoints)
     {
         float multiplier = Mathf.Pow(10, decimalPoints);
@@ -31,6 +47,7 @@ public static class FGUtils
     public static string NUMERIC => "0123456789";
     public static string SPECIAL => "!@#$%^&*()-_=+[]{}\\|;:<>.? ";
     public static string ALPHANUMERIC => ALPHA + NUMERIC;
+    public static string ALL => ALPHANUMERIC + SPECIAL;
     
     public static string FormatString(string s, string whitelist, string blacklist = "", string remove = "")
     {
@@ -78,14 +95,15 @@ public static class FGUtils
     
     public static string DateToString(DateTime value) => $"{value.Day:00}/{value.Month:00}/{value.Year:0000}";
     
-    public static DateTime TryParseDateTime(string value, DateTime fallback)
+    public static DateTime TryParseDateTime(string value, DateTime fallback, out bool failed)
     {
         try
         {
             if (value.Contains('/'))
             {
                 var split = value.Split('/');
-            
+                
+                failed = false;
                 return new DateTime(
                     int.Parse(split[2]),
                     int.Parse(split[1]),
@@ -94,7 +112,8 @@ public static class FGUtils
             else
             {
                 var split = value.Split('-');
-            
+                
+                failed = false;
                 return new DateTime(
                     int.Parse(split[0]),
                     int.Parse(split[1]),
@@ -104,6 +123,7 @@ public static class FGUtils
         catch (Exception e)
         {
             Debug.LogError(e.Message);
+            failed = true;
             return fallback;
         }
     }

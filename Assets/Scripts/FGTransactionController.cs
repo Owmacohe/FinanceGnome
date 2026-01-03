@@ -36,16 +36,11 @@ public class FGTransactionController : MonoBehaviour
         this.lineNumber = lineNumber;
         ModifyLineNumber();
 
-        OnDateSet(FGUtils.DateToString(entry.Date));
-        OnDescriptionSet(entry.Description);
-        OnValueSet(entry.Value.ToString());
-        OnCategorySet(entry.Category, false);
-        OnNoteSet(entry.Note);
-        
-        isCost.isOn = entry.IsCost;
-        ignore.isOn = entry.Ignore;
+        Refresh();
         
         #region Listeners
+        
+        #region OnValueChanged
         
         date.onValueChanged.AddListener(_ => dateChanged = true);
         description.onValueChanged.AddListener(_ => descriptionChanged = true);
@@ -65,6 +60,10 @@ public class FGTransactionController : MonoBehaviour
             categoryChanged = true;
         });
         note.onValueChanged.AddListener(_ => noteChanged = true);
+        
+        #endregion
+        
+        #region OnDeselect/OnSubmit
         
         date.onDeselect.AddListener(OnDateSet);
         date.onSubmit.AddListener(OnDateSet);
@@ -101,6 +100,20 @@ public class FGTransactionController : MonoBehaviour
         
         #endregion
         
+        #endregion
+    }
+
+    public void Refresh()
+    {
+        OnDateSet(FGUtils.DateToString(entry.Date));
+        OnDescriptionSet(entry.Description);
+        OnValueSet(entry.Value.ToString());
+        OnCategorySet(entry.Category, false);
+        OnNoteSet(entry.Note);
+        
+        isCost.isOn = entry.IsCost;
+        ignore.isOn = entry.Ignore;
+        
         IgnoreCheck();
     }
     
@@ -109,13 +122,18 @@ public class FGTransactionController : MonoBehaviour
     void OnDateSet(string newValue)
     {
         var formatted = FGUtils.FormatString(newValue, FGEntry.DATE_WHITELIST);
-        entry.Date = FGUtils.TryParseDateTime(formatted, entry.Date);
-        date.SetTextWithoutNotify(FGUtils.DateToString(entry.Date));
+        var temp = FGUtils.TryParseDateTime(formatted, entry.Date, out var failed);
 
-        if (dateChanged)
+        if (!failed)
         {
-            onSave?.Invoke();
-            dateChanged = false;
+            entry.Date = temp;
+            date.SetTextWithoutNotify(FGUtils.DateToString(entry.Date));
+
+            if (dateChanged)
+            {
+                onSave?.Invoke();
+                dateChanged = false;
+            }   
         }
     }
 

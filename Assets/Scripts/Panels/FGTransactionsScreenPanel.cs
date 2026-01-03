@@ -25,10 +25,12 @@ public class FGTransactionsScreenPanel : MonoBehaviour
             AddTransaction(manager.Database.Entries[i], i + 1);
     }
 
+    public void RefreshTransactions() => transactions.ForEach(transaction => transaction.Refresh());
+
     public void AddTransaction(FGEntry entry, int lineNumber)
     {
         var transaction = Instantiate(transactionPrefab, transactionsParent);
-        transaction.Initialize(lineNumber, entry, () => OnValueChanged());
+        transaction.Initialize(lineNumber, entry, OnValueChanged);
         transactions.Add(transaction);
         
         transaction.OnRemove += entry =>

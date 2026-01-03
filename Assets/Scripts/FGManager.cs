@@ -128,6 +128,7 @@ public class FGManager : MonoBehaviour
         
         balanceSheetScreen.InstantiateBalanceSheetCells();
         transactionsScreen.InstantiateTransactions();
+        importScreen.InstantiateImportRules();
         SetBalanceSheet();
         
         if (thenSave) Save(path);

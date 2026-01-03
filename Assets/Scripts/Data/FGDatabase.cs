@@ -5,23 +5,41 @@ public class FGDatabase
 {
     public string Name { get; set; }
     
+    public List<FGImportRule> ImportRules { get; }
+    
     public List<FGEntry> Entries { get; }
     public List<FGEntry> ValidEntries => Entries.Where(entry => !entry.Ignore).ToList();
+    public List<FGEntry> SortedEntries => Entries.OrderBy(entry => entry.Date).ToList();
+    
     public List<string> Categories => ValidEntries
         .Select(entry => entry.Category)
         .Distinct()
         .OrderBy(category => category)
         .ToList();
+    
     public float ValueTotal => ValidEntries.Sum(entry => entry.Value * (entry.IsCost ? -1 : 1));
     
     public FGDatabase(string name, string entries = "")
     {
         Name = name;
+        ImportRules = new();
         Entries = new();
         
-        Import(entries);
-    }
+        if (!string.IsNullOrEmpty(entries))
+        {
+            foreach (var i in entries.Split('\n'))
+            {
+                if (!string.IsNullOrEmpty(i))
+                {
+                    int count = FGUtils.Split(i).Count;
 
+                    if (count == 5) ImportRules.Add(new(i));
+                    else if (count == 7) Entries.Add(new(i));
+                }
+            }
+        }
+    }
+    
     public List<FGEntry> Import(string entries)
     {
         List<FGEntry> temp = new();
@@ -36,7 +54,7 @@ public class FGDatabase
             }
         }
 
-        return temp;
+        return temp.OrderBy(entry => entry.Date).ToList();
     }
     
     public string GetMatchingCategory(string value)
@@ -78,5 +96,5 @@ public class FGDatabase
     
     #endregion
 
-    public override string ToString() => string.Join('\n', Entries);
+    public override string ToString() => $"{string.Join('\n', ImportRules)}\n{string.Join('\n', SortedEntries)}";
 }

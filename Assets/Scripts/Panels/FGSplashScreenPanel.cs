@@ -53,6 +53,7 @@ public class FGSplashScreenPanel : MonoBehaviour
 
             manager.transactionsScreen.InstantiateTransactions();
             manager.balanceSheetScreen.InstantiateBalanceSheetCells();
+            manager.importScreen.InstantiateImportRules();
             manager.SetBalanceSheet();
         }
         

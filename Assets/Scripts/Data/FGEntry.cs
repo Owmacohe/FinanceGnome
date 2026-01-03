@@ -14,11 +14,12 @@ public class FGEntry
 
     public FGEntry(string entry)
     {
-        var split = Split(entry);
+        var split = FGUtils.Split(entry);
         if (split.Count != 4 && split.Count != 7) return;
 
         var dateFormatted = FGUtils.FormatString(split[0], DATE_WHITELIST);
-        Date = FGUtils.TryParseDateTime(dateFormatted, DateTime.Today);
+        var temp = FGUtils.TryParseDateTime(dateFormatted, DateTime.Today, out var failed);
+        if (!failed) Date = temp;
         
         var descriptionFormatted = FGUtils.FormatString(split[1], DESCRIPTION_WHITELIST);
         Description = descriptionFormatted;
@@ -73,21 +74,6 @@ public class FGEntry
         Note = note;
         Ignore = ignore;
     }
-
-    List<string> Split(string s, char separator = ',', char exception = '"')
-    {
-        List<string> split = new List<string> {""};
-        bool excepted = false;
-
-        foreach (var i in s.Trim())
-        {
-            if (i == exception) excepted = !excepted;
-            else if (i == separator && !excepted) split.Add("");
-            else split[^1] += i;
-        }
-
-        return split;
-    }
     
     public override string ToString() =>
         $"{FGUtils.DateToString(Date)}," +
@@ -99,7 +85,7 @@ public class FGEntry
         $"{Ignore}";
 
     public static string DATE_WHITELIST => $"/-{FGUtils.NUMERIC}";
-    public static string DESCRIPTION_WHITELIST => $"{FGUtils.ALPHANUMERIC}{FGUtils.SPECIAL}";
+    public static string DESCRIPTION_WHITELIST => $"{FGUtils.ALL}";
     public static string VALUE_WHITELIST => $".{FGUtils.NUMERIC}";
     public static string BOOL_WHITELIST => FGUtils.ALPHANUMERIC;
 }
