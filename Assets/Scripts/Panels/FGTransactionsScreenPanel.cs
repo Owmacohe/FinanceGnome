@@ -22,18 +22,18 @@ public class FGTransactionsScreenPanel : MonoBehaviour
     public void InstantiateTransactions()
     {
         for (int i = 0; i < manager.Database.Entries.Count; i++)
-            AddTransaction(manager.Database.Entries[i], i + 1);
+            AddTransaction(manager.Database.Entries[i], i + 1, false);
     }
-
+    
     public void RefreshTransactions() => transactions.ForEach(transaction => transaction.Refresh());
-
-    public void AddTransaction(FGEntry entry, int lineNumber)
+    
+    public void AddTransaction(FGEntry entry, int lineNumber, bool undoable)
     {
         var transaction = Instantiate(transactionPrefab, transactionsParent);
         transaction.Initialize(lineNumber, entry, OnValueChanged);
         transactions.Add(transaction);
         
-        transaction.OnRemove += entry =>
+        transaction.OnRemove += (entry, undoable) =>
         {
             manager.Database.Entries.Remove(entry);
             OnValueChanged();
@@ -42,8 +42,25 @@ public class FGTransactionsScreenPanel : MonoBehaviour
                 transactions[i].ModifyLineNumber(-1);
 
             transactions.Remove(transaction);
-            Destroy(transaction.gameObject);
+            Destroy(transaction.gameObject); // TODO: potential undo bug
+            
+            if (undoable) FGUndoController.Instance.SaveUndo(() =>
+            {
+                manager.Database.Entries.Add(entry);
+                AddTransaction(entry, manager.Database.Entries.Count, false);
+                
+                OnValueChanged();
+                
+                manager.SetTransactions();
+            });
         };
+        
+        if (undoable) FGUndoController.Instance.SaveUndo(() =>
+        {
+            transaction.OnRemove?.Invoke(entry, false);
+                
+            manager.SetTransactions();
+        });
     }
 
     public void SetAddEntriesAmount(string amount) =>
@@ -55,7 +72,7 @@ public class FGTransactionsScreenPanel : MonoBehaviour
         {
             var entry = new FGEntry(DateTime.Today);
             manager.Database.Entries.Add(entry);
-            AddTransaction(entry, manager.Database.Entries.Count);
+            AddTransaction(entry, manager.Database.Entries.Count, true);
         }
         
         OnValueChanged();

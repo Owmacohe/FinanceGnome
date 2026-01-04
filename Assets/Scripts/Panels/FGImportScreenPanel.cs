@@ -20,30 +20,47 @@ public class FGImportScreenPanel : MonoBehaviour
     public void InstantiateImportRules()
     {
         foreach (var i in manager.Database.ImportRules)
-            AddImportRule(i);
+            AddImportRule(i, false);
     }
 
-    void AddImportRule(FGImportRule importRule)
+    void AddImportRule(FGImportRule importRule, bool undoable)
     {
         var importRuleController = Instantiate(importRulePrefab, importRuleParent);
         importRuleController.Initialize(importRule, OnValueChanged);
         importRules.Add(importRuleController);
         
-        importRuleController.OnRemove += importRule =>
+        importRuleController.OnRemove += (importRule, undoable) =>
         {
             manager.Database.ImportRules.Remove(importRule);
             OnValueChanged();
 
             importRules.Remove(importRuleController);
-            Destroy(importRuleController.gameObject);
+            Destroy(importRuleController.gameObject); // TODO: potential undo bug
+        
+            if (undoable) FGUndoController.Instance.SaveUndo(() =>
+            {
+                manager.Database.ImportRules.Add(importRule);
+                AddImportRule(importRule, false);
+                
+                OnValueChanged();
+                
+                manager.SetImport();
+            });
         };
+        
+        if (undoable) FGUndoController.Instance.SaveUndo(() =>
+        {
+            importRuleController.OnRemove?.Invoke(importRule, false);
+                
+            manager.SetImport();
+        });
     }
     
     public void AddImportRule()
     {
         var importRule = new FGImportRule();
         manager.Database.ImportRules.Add(importRule);
-        AddImportRule(importRule);
+        AddImportRule(importRule, true);
         
         OnValueChanged();
     }
@@ -73,7 +90,10 @@ public class FGImportScreenPanel : MonoBehaviour
             {
                 CheckEntry(entries[i]);
                 
-                manager.transactionsScreen.AddTransaction(entries[i], manager.Database.Entries.Count - entries.Count + i + 1);
+                manager.transactionsScreen.AddTransaction(
+                    entries[i],
+                    manager.Database.Entries.Count - entries.Count + i + 1,
+                    false);
             }
             
             manager.transactionsScreen.OnValueChanged();
@@ -87,6 +107,11 @@ public class FGImportScreenPanel : MonoBehaviour
     public void Apply()
     {
         manager.Database.Entries.ForEach(CheckEntry);
+        
         manager.transactionsScreen.RefreshTransactions();
+        manager.transactionsScreen.OnValueChanged();
+        manager.SetTransactions();
+        
+        manager.Save();
     }
 }

@@ -70,12 +70,20 @@ public class FGDatabase
     
     #region Months
 
+    public int TotalMonths() => ValidEntries.Select(entry => entry.Date.Month).Distinct().ToList().Count;
+
     public float TotalForMonth(int month, bool costs) => ValidEntries
         .Where(entry => entry.IsCost == costs && entry.Date.Month == month)
         .Sum(entry => entry.Value);
     
     public float TotalForMonthByCategory(List<FGEntry> categoryEntries, int month) =>
         categoryEntries.Where(entry => entry.Date.Month == month).Sum(entry => entry.Value);
+
+    public int TotalEntriesForMonth(int month) =>
+        ValidEntries.Where(entry => entry.Date.Month == month).ToList().Count;
+
+    public int TotalEntriesInCategoryForMonth(List<FGEntry> categoryEntries, int month) =>
+        categoryEntries.Where(entry => entry.Date.Month == month).ToList().Count;
     
     #endregion
     
@@ -84,15 +92,18 @@ public class FGDatabase
     public List<FGEntry> EntriesInCategory(string category, bool costs) => ValidEntries
         .Where(entry => entry.Category == category && entry.IsCost == costs)
         .ToList();
+
+    int TotalMonthsInCategory(List<FGEntry> categoryEntries) =>
+        categoryEntries.Select(entry => entry.Date.Month).Distinct().ToList().Count;
     
     public float TotalForCategory(List<FGEntry> categoryEntries) =>
         categoryEntries.Sum(entry => entry.Value);
 
     public float AverageForCategoryByWeek(List<FGEntry> categoryEntries) =>
-        categoryEntries.Sum(entry => entry.Value) / 52f;
+        categoryEntries.Sum(entry => entry.Value) / (TotalMonthsInCategory(categoryEntries) * (52f/12f));
 
     public float AverageForCategoryByMonth(List<FGEntry> categoryEntries) =>
-        categoryEntries.Sum(entry => entry.Value) / 12f;
+        categoryEntries.Sum(entry => entry.Value) / TotalMonthsInCategory(categoryEntries);
     
     #endregion
 

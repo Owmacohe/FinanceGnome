@@ -15,7 +15,7 @@ public class FGEntry
     public FGEntry(string entry)
     {
         var split = FGUtils.Split(entry);
-        if (split.Count != 4 && split.Count != 7) return;
+        if (split.Count < 4) return;
 
         var dateFormatted = FGUtils.FormatString(split[0], DATE_WHITELIST);
         var temp = FGUtils.TryParseDateTime(dateFormatted, DateTime.Today, out var failed);
@@ -24,7 +24,24 @@ public class FGEntry
         var descriptionFormatted = FGUtils.FormatString(split[1], DESCRIPTION_WHITELIST);
         Description = descriptionFormatted;
         
-        if (split.Count == 4)
+        if (split.Count == 7)
+        {
+            var valueFormatted = FGUtils.FormatString(split[2], VALUE_WHITELIST);
+            if (float.TryParse(valueFormatted, out float outValue)) Value = outValue;
+            
+            var isCostFormatted = FGUtils.FormatString(split[3], BOOL_WHITELIST);
+            IsCost = !bool.TryParse(isCostFormatted, out bool outIsCost) || outIsCost;
+        
+            var categoryFormatted = FGUtils.FormatString(split[4], DESCRIPTION_WHITELIST);
+            Category = categoryFormatted;
+        
+            var noteFormatted = FGUtils.FormatString(split[5], DESCRIPTION_WHITELIST);
+            Note = noteFormatted;
+        
+            var ignoreFormatted = FGUtils.FormatString(split[6], BOOL_WHITELIST);
+            if (bool.TryParse(ignoreFormatted, out bool outIgnore)) Ignore = outIgnore;
+        }
+        else
         {
             if (string.IsNullOrEmpty(split[3]))
             {
@@ -44,23 +61,6 @@ public class FGEntry
             Category = "";
             Note = "";
             Ignore = false;
-        }
-        else if (split.Count == 7)
-        {
-            var valueFormatted = FGUtils.FormatString(split[2], VALUE_WHITELIST);
-            if (float.TryParse(valueFormatted, out float outValue)) Value = outValue;
-            
-            var isCostFormatted = FGUtils.FormatString(split[3], BOOL_WHITELIST);
-            IsCost = !bool.TryParse(isCostFormatted, out bool outIsCost) || outIsCost;
-        
-            var categoryFormatted = FGUtils.FormatString(split[4], DESCRIPTION_WHITELIST);
-            Category = categoryFormatted;
-        
-            var noteFormatted = FGUtils.FormatString(split[5], DESCRIPTION_WHITELIST);
-            Note = noteFormatted;
-        
-            var ignoreFormatted = FGUtils.FormatString(split[6], BOOL_WHITELIST);
-            if (bool.TryParse(ignoreFormatted, out bool outIgnore)) Ignore = outIgnore;
         }
     }
 

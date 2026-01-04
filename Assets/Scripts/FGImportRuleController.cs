@@ -19,7 +19,7 @@ public class FGImportRuleController : MonoBehaviour
     FGImportRule importRule;
     Action onSave;
 
-    public Action<FGImportRule> OnRemove;
+    public Action<FGImportRule, bool> OnRemove;
     
     public void Initialize(FGImportRule importRule, Action onSave)
     {
@@ -113,5 +113,5 @@ public class FGImportRuleController : MonoBehaviour
     
     #endregion
 
-    public void Remove() => OnRemove?.Invoke(importRule);
+    public void Remove() => OnRemove?.Invoke(importRule, true);
 }

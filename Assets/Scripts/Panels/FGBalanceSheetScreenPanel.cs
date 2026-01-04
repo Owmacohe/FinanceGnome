@@ -78,11 +78,12 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
             row.Add(string.IsNullOrEmpty(i) ? "N/A" : i);
 
             for (int j = 0; j < 12; j++)
-                row.Add(FGUtils.FormatLargeNumber(
-                    manager.Database.TotalForMonthByCategory(entries, j + 1),
-                    true,
-                    colourMax,
-                    3000));
+                row.Add(manager.Database.TotalEntriesInCategoryForMonth(entries, j + 1) == 0 ? "-" :
+                    FGUtils.FormatLargeNumber(
+                        manager.Database.TotalForMonthByCategory(entries, j + 1),
+                        true,
+                        colourMax,
+                        3000));
             
             row.Add(FGUtils.FormatLargeNumber(
                 manager.Database.AverageForCategoryByWeek(entries),
@@ -110,8 +111,14 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
 
         for (int i = 0; i < 12; i++)
         {
-            var incomeTotal = manager.Database.TotalForMonth(i+1, false);
-            var costsTotal = manager.Database.TotalForMonth(i+1, true);
+            if (manager.Database.TotalEntriesForMonth(i + 1) == 0)
+            {
+                row.Add("-");
+                continue;
+            }
+            
+            var incomeTotal = manager.Database.TotalForMonth(i + 1, false);
+            var costsTotal = manager.Database.TotalForMonth(i + 1, true);
             float balance = incomeTotal - costsTotal;
             
             row.Add(FGUtils.FormatLargeNumber(
@@ -121,8 +128,8 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
                 10000));
         }
         
-        var weeklyTotal = manager.Database.ValueTotal / 52f;
-        var monthlyTotal = manager.Database.ValueTotal / 12f;
+        var weeklyTotal = manager.Database.ValueTotal / (manager.Database.TotalMonths() * (52f/12f));
+        var monthlyTotal = manager.Database.ValueTotal / manager.Database.TotalMonths();
         
         row.Add(FGUtils.FormatLargeNumber(
             weeklyTotal,

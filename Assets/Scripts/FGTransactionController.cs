@@ -26,7 +26,7 @@ public class FGTransactionController : MonoBehaviour
 
     const string HIGHLIGHTER = "<mark=#A8CEFF>";
 
-    public Action<FGEntry> OnRemove;
+    public Action<FGEntry, bool> OnRemove;
 
     public void Initialize(int lineNumber, FGEntry entry, Action onSave)
     {
@@ -74,13 +74,7 @@ public class FGTransactionController : MonoBehaviour
         value.onDeselect.AddListener(OnValueSet);
         value.onSubmit.AddListener(OnValueSet);
         
-        isCost.onValueChanged.AddListener(newValue =>
-        {
-            entry.IsCost = newValue;
-            isCost.SetIsOnWithoutNotify(entry.IsCost);
-            
-            onSave?.Invoke();
-        });
+        isCost.onValueChanged.AddListener(OnIsCostSet);
         
         category.onDeselect.AddListener(newValue => OnCategorySet(newValue, false));
         category.onSubmit.AddListener(newValue => OnCategorySet(newValue, true));
@@ -88,15 +82,7 @@ public class FGTransactionController : MonoBehaviour
         note.onDeselect.AddListener(OnNoteSet);
         note.onSubmit.AddListener(OnNoteSet);
         
-        ignore.onValueChanged.AddListener(newValue =>
-        {
-            entry.Ignore = newValue;
-            ignore.SetIsOnWithoutNotify(entry.Ignore);
-
-            IgnoreCheck();
-            
-            onSave?.Invoke();
-        });
+        ignore.onValueChanged.AddListener(OnIgnoreSet);
         
         #endregion
         
@@ -158,17 +144,23 @@ public class FGTransactionController : MonoBehaviour
         else if (float.TryParse(formatted, out float outValue)) entry.Value = outValue;
         
         value.SetTextWithoutNotify(FGUtils.FormatLargeNumber(entry.Value, false));
-        value.GetComponent<Image>().color = FGUtils.GraduatedColourLerp(
-            Color.white,
-            Color.HSVToRGB(entry.IsCost ? 0 : 0.33f, 0.5f, 1), 
-            entry.Value / 3000f,
-            6);
+        ValueCheck();
 
         if (valueChanged)
         {
             onSave?.Invoke();
             valueChanged = false;
         }
+    }
+
+    void OnIsCostSet(bool newValue)
+    {
+        entry.IsCost = newValue;
+        isCost.SetIsOnWithoutNotify(entry.IsCost);
+            
+        ValueCheck();
+            
+        onSave?.Invoke();
     }
 
     void OnCategorySet(string newValue, bool setMatchingCategory)
@@ -205,8 +197,27 @@ public class FGTransactionController : MonoBehaviour
             noteChanged = false;
         }
     }
+
+    void OnIgnoreSet(bool newValue)
+    {
+        entry.Ignore = newValue;
+        ignore.SetIsOnWithoutNotify(entry.Ignore);
+
+        IgnoreCheck();
+            
+        onSave?.Invoke();
+    }
     
     #endregion
+
+    void ValueCheck()
+    {
+        value.GetComponent<Image>().color = FGUtils.GraduatedColourLerp(
+            Color.white,
+            Color.HSVToRGB(entry.IsCost ? 0 : 0.33f, 0.5f, 1), 
+            entry.Value / 3000f,
+            6);
+    }
 
     void IgnoreCheck()
     {
@@ -224,5 +235,5 @@ public class FGTransactionController : MonoBehaviour
         line.text = lineNumber.ToString();
     }
 
-    public void Remove() => OnRemove?.Invoke(entry);
+    public void Remove() => OnRemove?.Invoke(entry, true);
 }
