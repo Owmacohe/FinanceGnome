@@ -51,6 +51,8 @@ public static class FGUtils
     
     public static string FormatString(string s, string whitelist, string blacklist = "", string remove = "")
     {
+        if (string.IsNullOrEmpty(s)) return "";
+        
         return string.Join("", (string.IsNullOrEmpty(remove) ? s : s.Replace(remove, ""))
             .Where(c => !blacklist.Contains(c))
             .Where(c => whitelist.Contains(c)));

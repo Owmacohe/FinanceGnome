@@ -79,8 +79,8 @@ public class FGDatabase
     public float TotalForMonthByCategory(List<FGEntry> categoryEntries, int month) =>
         categoryEntries.Where(entry => entry.Date.Month == month).Sum(entry => entry.Value);
 
-    public int TotalEntriesForMonth(int month) =>
-        ValidEntries.Where(entry => entry.Date.Month == month).ToList().Count;
+    public int TotalEntriesForMonth(int month, bool costs) =>
+        ValidEntries.Where(entry => entry.IsCost == costs && entry.Date.Month == month).ToList().Count;
 
     public int TotalEntriesInCategoryForMonth(List<FGEntry> categoryEntries, int month) =>
         categoryEntries.Where(entry => entry.Date.Month == month).ToList().Count;

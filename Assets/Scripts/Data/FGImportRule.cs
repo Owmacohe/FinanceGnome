@@ -27,11 +27,12 @@ public class FGImportRule
     
     public FGImportRuleThenProperty thenProperty { get; set; }
     public string Result { get; set; }
+    public string Note { get; set; }
 
     public FGImportRule(string importRule)
     {
         var split = FGUtils.Split(importRule);
-        if (split.Count != 5) return;
+        if (split.Count < 5) return;
         
         var ifPropertyFormatted = FGUtils.FormatString(split[0], FGUtils.ALL);
         if (Enum.TryParse(typeof(FGImportRuleIfProperty), ifPropertyFormatted, out var outIfProperty))
@@ -50,11 +51,16 @@ public class FGImportRule
         
         var resultFormatted = FGUtils.FormatString(split[4], FGUtils.ALL);
         Result = resultFormatted;
+        
+        if (split.Count < 6) return;
+        
+        var noteFormatted = FGUtils.FormatString(split[5], FGUtils.ALL);
+        Note = noteFormatted;
     }
 
     public FGImportRule(
         FGImportRuleIfProperty ifProperty = FGImportRuleIfProperty.Description, FGImportRuleComparator comparator = FGImportRuleComparator.GreaterThanOrEquals, string comparison = "",
-        FGImportRuleThenProperty thenProperty = FGImportRuleThenProperty.Category, string result = "")
+        FGImportRuleThenProperty thenProperty = FGImportRuleThenProperty.Category, string result = "", string note = "")
     {
         this.ifProperty = ifProperty;
         Comparator = comparator;
@@ -62,6 +68,7 @@ public class FGImportRule
 
         this.thenProperty = thenProperty;
         Result = result;
+        Note = note;
     }
 
     public void CheckEntry(FGEntry entry)
@@ -102,6 +109,8 @@ public class FGImportRule
                         entry.Ignore = parsedIgnore;
                     break;
             }
+
+            entry.Note = Note;
         }
     }
 
@@ -173,5 +182,6 @@ public class FGImportRule
         $"{Comparator}," +
         $"{Comparison}," +
         $"{thenProperty}," +
-        $"{Result}";
+        $"{Result}," +
+        $"{Note}";
 }

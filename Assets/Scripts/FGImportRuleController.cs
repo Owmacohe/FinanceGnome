@@ -12,9 +12,11 @@ public class FGImportRuleController : MonoBehaviour
     [Header("Then")]
     [SerializeField] TMP_Dropdown thenProperty;
     [SerializeField] TMP_InputField result;
+    [SerializeField] TMP_InputField note;
     
     bool comparisonChanged,
-         resultChanged;
+         resultChanged,
+         noteChanged;
     
     FGImportRule importRule;
     Action onSave;
@@ -43,6 +45,7 @@ public class FGImportRuleController : MonoBehaviour
         
         thenProperty.onValueChanged.AddListener(OnThenPropertySet);
         result.onValueChanged.AddListener(_ => resultChanged = true);
+        note.onValueChanged.AddListener(_ => noteChanged = true);
         
         #endregion
         
@@ -53,6 +56,9 @@ public class FGImportRuleController : MonoBehaviour
         
         result.onDeselect.AddListener(OnResultSet);
         result.onSubmit.AddListener(OnResultSet);
+        
+        note.onDeselect.AddListener(OnNoteSet);
+        note.onSubmit.AddListener(OnNoteSet);
         
         #endregion
         
@@ -108,6 +114,19 @@ public class FGImportRuleController : MonoBehaviour
         {
             onSave?.Invoke();
             resultChanged = false;
+        }
+    }
+
+    void OnNoteSet(string newValue)
+    {
+        var formatted = FGUtils.FormatString(newValue, FGUtils.ALL);
+        importRule.Note = formatted;
+        note.SetTextWithoutNotify(importRule.Note);
+
+        if (noteChanged)
+        {
+            onSave?.Invoke();
+            noteChanged = false;
         }
     }
     

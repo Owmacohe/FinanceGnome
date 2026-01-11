@@ -20,10 +20,12 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
         AddBlankBalanceSheetRow();
         AddHeaderBalanceSheetRow("Costs");
         AddCategoryEntries(true);
+        AddMonthlyTotals(true);
 
         AddBlankBalanceSheetRow();
         AddHeaderBalanceSheetRow("Income");
         AddCategoryEntries(false);
+        AddMonthlyTotals(false);
 
         AddBlankBalanceSheetRow();
         AddBalanceBalanceSheetRow();
@@ -57,12 +59,12 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
     void AddHeaderBalanceSheetRow(string header)
     {
         var temp = new string[15];
-        temp[0] = $"<b>{header}</b>";
+        temp[0] = $"<b><i>{header}</i></b>";
         
         AddBalanceSheetRow(temp.ToList());
     }
 
-    Dictionary<string, List<TMP_Text>> AddCategoryEntries(bool costs)
+    void AddCategoryEntries(bool costs)
     {
         var colourMax = costs ? Color.red : Color.green;
 
@@ -97,13 +99,32 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
                 colourMax,
                 2000));
 
-            temp.Add(i, AddBalanceSheetRow(row));
+            AddBalanceSheetRow(row);
         }
-
-        return temp;
     }
 
-    List<TMP_Text> AddBalanceBalanceSheetRow()
+    void AddMonthlyTotals(bool costs)
+    {
+        var colourMax = costs ? Color.red : Color.green;
+        
+        List<string> row = new();
+        row.Add("<b><i>Total</i></b>");
+
+        for (int i = 0; i < 12; i++)
+            row.Add(manager.Database.TotalEntriesForMonth(i + 1, costs) == 0 ? "-" :
+                FGUtils.FormatLargeNumber(
+                    manager.Database.TotalForMonth(i + 1, costs),
+                    true,
+                    colourMax,
+                    3000));
+        
+        row.Add("");
+        row.Add("");
+        
+        AddBalanceSheetRow(row);
+    }
+
+    void AddBalanceBalanceSheetRow()
     {
         List<string> row = new();
             
@@ -111,7 +132,8 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
 
         for (int i = 0; i < 12; i++)
         {
-            if (manager.Database.TotalEntriesForMonth(i + 1) == 0)
+            if (manager.Database.TotalEntriesForMonth(i + 1, true) == 0 &&
+                manager.Database.TotalEntriesForMonth(i + 1, false) == 0)
             {
                 row.Add("-");
                 continue;
@@ -143,7 +165,7 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
             monthlyTotal >= 0 ? Color.green : Color.red,
             7500));
             
-        return AddBalanceSheetRow(row);
+        AddBalanceSheetRow(row);
     }
     
     #endregion
