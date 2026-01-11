@@ -54,7 +54,15 @@ public class FGTransactionsScreenPanel : MonoBehaviour
                 manager.SetTransactions();
             });
         };
-        
+
+        transaction.OnSubmitPressed += index =>
+        {
+            int transactionIndex = transactions.IndexOf(transaction) + 1;
+            if (transactionIndex >= transactions.Count) transactionIndex = 0; // TODO: skip over ignored
+            
+            transactions[transactionIndex].Select(index);
+        };
+
         if (undoable) FGUndoController.Instance.SaveUndo(() =>
         {
             transaction.OnRemove?.Invoke(entry, false);

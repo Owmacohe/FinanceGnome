@@ -47,6 +47,14 @@ public class FGImportScreenPanel : MonoBehaviour
                 manager.SetImport();
             });
         };
+
+        importRuleController.OnSubmitPressed += index =>
+        {
+            int importRuleIndex = importRules.IndexOf(importRuleController) + 1;
+            if (importRuleIndex >= importRules.Count) importRuleIndex = 0;
+            
+            importRules[importRuleIndex].Select(index);
+        };
         
         if (undoable) FGUndoController.Instance.SaveUndo(() =>
         {

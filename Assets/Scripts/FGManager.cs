@@ -32,6 +32,8 @@ public class FGManager : MonoBehaviour
     [HideInInspector] public FGDatabase Database;
     
     [HideInInspector] public bool TransactionsChanged;
+
+    public Action OnTabPressed;
     
     void Start()
     {
@@ -45,6 +47,8 @@ public class FGManager : MonoBehaviour
         
         splashScreen.CheckRecentDatabase();
     }
+
+    public void OnTab() => OnTabPressed?.Invoke();
     
     #region Top Row
     

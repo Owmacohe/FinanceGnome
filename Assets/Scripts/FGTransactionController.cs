@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +22,9 @@ public class FGTransactionController : MonoBehaviour
          categoryChanged,
          noteChanged;
 
+    List<TMP_InputField> fields;
+    TMP_InputField currentField;
+
     int lineNumber;
     FGEntry entry;
     Action onSave;
@@ -27,9 +32,12 @@ public class FGTransactionController : MonoBehaviour
     const string HIGHLIGHTER = "<mark=#A8CEFF>";
 
     public Action<FGEntry, bool> OnRemove;
+    public Action<int> OnSubmitPressed;
 
     public void Initialize(int lineNumber, FGEntry entry, Action onSave)
     {
+        fields = new() { date, description, value, category, note  };
+        
         this.entry = entry;
         this.onSave = onSave;
 
@@ -63,30 +71,46 @@ public class FGTransactionController : MonoBehaviour
         
         #endregion
         
-        #region OnDeselect/OnSubmit
+        #region OnSelect/OnDeselect/OnSubmit
         
+        date.onSelect.AddListener(_ => currentField = date);
         date.onDeselect.AddListener(OnDateSet);
-        date.onSubmit.AddListener(OnDateSet);
+        date.onSubmit.AddListener(_ => OnSubmit());
         
+        description.onSelect.AddListener(_ => currentField = description);
         description.onDeselect.AddListener(OnDescriptionSet);
-        description.onSubmit.AddListener(OnDescriptionSet);
+        description.onSubmit.AddListener(_ => OnSubmit());
         
+        value.onSelect.AddListener(_ => currentField = value);
         value.onDeselect.AddListener(OnValueSet);
-        value.onSubmit.AddListener(OnValueSet);
+        value.onSubmit.AddListener(_ => OnSubmit());
         
         isCost.onValueChanged.AddListener(OnIsCostSet);
         
+        category.onSelect.AddListener(_ => currentField = category);
         category.onDeselect.AddListener(newValue => OnCategorySet(newValue, false));
-        category.onSubmit.AddListener(newValue => OnCategorySet(newValue, true));
+        category.onSubmit.AddListener(_ => OnSubmit());
         
+        note.onSelect.AddListener(_ => currentField = note);
         note.onDeselect.AddListener(OnNoteSet);
-        note.onSubmit.AddListener(OnNoteSet);
+        note.onSubmit.AddListener(_ => OnSubmit());
         
         ignore.onValueChanged.AddListener(OnIgnoreSet);
         
         #endregion
         
         #endregion
+
+        FGManager.Instance.OnTabPressed += () =>
+        {
+            if (currentField == null) return;
+            
+            int index = fields.IndexOf(currentField);
+            index++;
+            if (index >= fields.Count) index = 0;
+            
+            fields[index].Select();
+        };
     }
 
     public void Refresh()
@@ -121,6 +145,8 @@ public class FGTransactionController : MonoBehaviour
                 dateChanged = false;
             }   
         }
+
+        currentField = null;
     }
 
     void OnDescriptionSet(string newValue)
@@ -134,6 +160,8 @@ public class FGTransactionController : MonoBehaviour
             onSave?.Invoke();
             descriptionChanged = false;
         }
+
+        currentField = null;
     }
 
     void OnValueSet(string newValue)
@@ -151,6 +179,8 @@ public class FGTransactionController : MonoBehaviour
             onSave?.Invoke();
             valueChanged = false;
         }
+
+        currentField = null;
     }
 
     void OnIsCostSet(bool newValue)
@@ -161,6 +191,8 @@ public class FGTransactionController : MonoBehaviour
         ValueCheck();
             
         onSave?.Invoke();
+
+        currentField = null;
     }
 
     void OnCategorySet(string newValue, bool setMatchingCategory)
@@ -183,6 +215,8 @@ public class FGTransactionController : MonoBehaviour
             onSave?.Invoke();
             categoryChanged = false;
         }
+
+        currentField = null;
     }
 
     void OnNoteSet(string newValue)
@@ -196,6 +230,8 @@ public class FGTransactionController : MonoBehaviour
             onSave?.Invoke();
             noteChanged = false;
         }
+
+        currentField = null;
     }
 
     void OnIgnoreSet(bool newValue)
@@ -206,6 +242,8 @@ public class FGTransactionController : MonoBehaviour
         IgnoreCheck();
             
         onSave?.Invoke();
+
+        currentField = null;
     }
     
     #endregion
@@ -234,6 +272,10 @@ public class FGTransactionController : MonoBehaviour
         lineNumber += amount;
         line.text = lineNumber.ToString();
     }
+
+    public void Select(int index) => fields[index].Select();
+    
+    void OnSubmit() => OnSubmitPressed?.Invoke(fields.IndexOf(currentField));
 
     public void Remove() => OnRemove?.Invoke(entry, true);
 }

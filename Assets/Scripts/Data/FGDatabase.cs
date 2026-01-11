@@ -33,7 +33,7 @@ public class FGDatabase
                 {
                     int count = FGUtils.Split(i).Count;
 
-                    if (count == 5) ImportRules.Add(new(i));
+                    if (count == 6) ImportRules.Add(new(i));
                     else if (count == 7) Entries.Add(new(i));
                 }
             }

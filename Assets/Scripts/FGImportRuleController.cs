@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -18,13 +19,19 @@ public class FGImportRuleController : MonoBehaviour
          resultChanged,
          noteChanged;
     
+    List<TMP_InputField> fields;
+    TMP_InputField currentField;
+    
     FGImportRule importRule;
     Action onSave;
 
     public Action<FGImportRule, bool> OnRemove;
+    public Action<int> OnSubmitPressed;
     
     public void Initialize(FGImportRule importRule, Action onSave)
     {
+        fields = new() { comparison, result, note  };
+        
         this.importRule = importRule;
         this.onSave = onSave;
         
@@ -34,6 +41,7 @@ public class FGImportRuleController : MonoBehaviour
         
         OnThenPropertySet((int)importRule.thenProperty);
         OnResultSet(importRule.Result);
+        OnNoteSet(importRule.Note);
         
         #region Listeners
         
@@ -49,20 +57,34 @@ public class FGImportRuleController : MonoBehaviour
         
         #endregion
         
-        #region OnDeselect/OnSubmit
+        #region OnSelectOnDeselect/OnSubmit
         
+        comparison.onSelect.AddListener(_ => currentField = comparison);
         comparison.onDeselect.AddListener(OnComparisonSet);
-        comparison.onSubmit.AddListener(OnComparisonSet);
+        comparison.onSubmit.AddListener(_ => OnSubmit());
         
+        result.onSelect.AddListener(_ => currentField = result);
         result.onDeselect.AddListener(OnResultSet);
-        result.onSubmit.AddListener(OnResultSet);
+        result.onSubmit.AddListener(_ => OnSubmit());
         
+        note.onSelect.AddListener(_ => currentField = note);
         note.onDeselect.AddListener(OnNoteSet);
-        note.onSubmit.AddListener(OnNoteSet);
+        note.onSubmit.AddListener(_ => OnSubmit());
         
         #endregion
         
         #endregion
+
+        FGManager.Instance.OnTabPressed += () =>
+        {
+            if (currentField == null) return;
+            
+            int index = fields.IndexOf(currentField);
+            index++;
+            if (index >= fields.Count) index = 0;
+            
+            fields[index].Select();
+        };
     }
     
     #region Setters
@@ -73,6 +95,8 @@ public class FGImportRuleController : MonoBehaviour
         ifProperty.SetValueWithoutNotify(index);
 
         onSave?.Invoke();
+
+        currentField = null;
     }
 
     void OnComparatorSet(int index)
@@ -81,6 +105,8 @@ public class FGImportRuleController : MonoBehaviour
         comparator.SetValueWithoutNotify(index);
 
         onSave?.Invoke();
+
+        currentField = null;
     }
 
     void OnComparisonSet(string newValue)
@@ -94,6 +120,8 @@ public class FGImportRuleController : MonoBehaviour
             onSave?.Invoke();
             comparisonChanged = false;
         }
+
+        currentField = null;
     }
 
     void OnThenPropertySet(int index)
@@ -102,6 +130,8 @@ public class FGImportRuleController : MonoBehaviour
         thenProperty.SetValueWithoutNotify(index);
 
         onSave?.Invoke();
+
+        currentField = null;
     }
 
     void OnResultSet(string newValue)
@@ -115,6 +145,8 @@ public class FGImportRuleController : MonoBehaviour
             onSave?.Invoke();
             resultChanged = false;
         }
+
+        currentField = null;
     }
 
     void OnNoteSet(string newValue)
@@ -128,9 +160,15 @@ public class FGImportRuleController : MonoBehaviour
             onSave?.Invoke();
             noteChanged = false;
         }
+
+        currentField = null;
     }
     
     #endregion
+
+    public void Select(int index) => fields[index].Select();
+
+    void OnSubmit() => OnSubmitPressed?.Invoke(fields.IndexOf(currentField));
 
     public void Remove() => OnRemove?.Invoke(importRule, true);
 }

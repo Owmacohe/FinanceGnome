@@ -3,8 +3,9 @@
   - Row highlight on hover
   - ~~Faster scrolling~~
 - Transactions
-  - Tab and return to move between cells
+  - ~~Tab and return to move between cells~~
   - ~~Faster scrolling~~
 - Import
+  - ~~Tab and return to move between cells~~
   - ~~Add note to import rule~~
   - ~~Faster scrolling~~
