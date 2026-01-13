@@ -114,8 +114,6 @@ public class FGSplashScreenPanel : MonoBehaviour
         else
         {
             manager.Load(path, true);
-            
-            PlayerPrefs.SetString(FGManager.RECENT_PATH, path);
             CheckRecentDatabase();
         }
         

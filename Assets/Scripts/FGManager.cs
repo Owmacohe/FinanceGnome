@@ -11,6 +11,8 @@ using UnityEngine.UI;
 public class FGManager : MonoBehaviour
 {
     public static FGManager Instance;
+
+    [SerializeField] TMP_Text versionNumber;
     
     [Header("Top Bar")]
     [SerializeField] GameObject topRow;
@@ -39,6 +41,8 @@ public class FGManager : MonoBehaviour
     {
         Instance = this;
         Database = new(DefaultDatabaseName);
+
+        versionNumber.text = Application.version;
         
         splashScreen.Initialize();
         balanceSheetScreen.Initialize();
@@ -96,6 +100,12 @@ public class FGManager : MonoBehaviour
             Debug.LogError("Database is null");
             return;
         }
+
+        if (!File.Exists(path))
+        {
+            Debug.LogError("File does not exist");
+            return;
+        }
         
         File.WriteAllText(path, Database.ToString());
         Debug.Log($"Saved <b>{Database.Name}</b> to <i>{path}</i>");
@@ -134,6 +144,8 @@ public class FGManager : MonoBehaviour
         transactionsScreen.InstantiateTransactions();
         importScreen.InstantiateImportRules();
         SetBalanceSheet();
+        
+        PlayerPrefs.SetString(RECENT_PATH, path);
         
         if (thenSave) Save(path);
     }
