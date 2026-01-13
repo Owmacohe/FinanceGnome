@@ -1,6 +1,6 @@
 ﻿- Balance Sheet
   - ~~Totals for costs and income~~
-  - Row highlight on hover
+  - ~~Row highlight on hover~~
   - ~~Faster scrolling~~
 - Transactions
   - ~~Tab and return to move between cells~~

@@ -6,9 +6,11 @@ using UnityEngine;
 public class FGBalanceSheetScreenPanel : MonoBehaviour
 {
     [SerializeField] Transform balanceSheetParent;
-    [SerializeField] TMP_Text balanceSheetCell;
+    [SerializeField] FGBalanceSheetCellController balanceSheetCell;
 
     FGManager manager;
+    
+    bool isEven;
 
     public void Initialize()
     {
@@ -33,42 +35,41 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
     
     #region AddBalanceSheetRow
     
-    List<TMP_Text> AddBalanceSheetRow(List<string> row)
+    void AddBalanceSheetRow(List<string> row, Color backgroundColour)
     {
         if (row.Count != 15)
         {
             Debug.LogError($"Row of size {row.Count} is not valid (must be of size 15)");
-            return null;
+            return;
         }
-
-        List<TMP_Text> temp = new();
-
+        
         foreach (var i in row)
         {
             var cell = Instantiate(balanceSheetCell, balanceSheetParent);
-            cell.text = string.IsNullOrEmpty(i) ? "" : i;
-            cell.name = cell.text;
-            temp.Add(cell);
-        }
+            var text = string.IsNullOrEmpty(i) ? "" : i;
 
-        return temp;
+            cell.Initialize(text, backgroundColour);
+            cell.name = text;
+        }
     }
     
-    void AddBlankBalanceSheetRow() => AddBalanceSheetRow((new string[15]).ToList());
+    void AddBlankBalanceSheetRow() => AddBalanceSheetRow((new string[15]).ToList(), FGUtils.EMPTY);
 
     void AddHeaderBalanceSheetRow(string header)
     {
         var temp = new string[15];
-        temp[0] = $"<b><i>{header}</i></b>";
+        temp[0] = $"<b>{header}</b>";
         
-        AddBalanceSheetRow(temp.ToList());
+        AddBalanceSheetRow(temp.ToList(), FGUtils.EVEN);
     }
 
     void AddCategoryEntries(bool costs)
     {
-        var colourMax = costs ? Color.red : Color.green;
+        var colourMax = costs ? FGUtils.NEGATIVE : FGUtils.POSITIVE;
 
         Dictionary<string, List<TMP_Text>> temp = new();
+
+        isEven = false;
         
         foreach (var i in manager.Database.Categories)
         {
@@ -99,16 +100,17 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
                 colourMax,
                 2000));
 
-            AddBalanceSheetRow(row);
+            AddBalanceSheetRow(row, isEven ? FGUtils.EVEN : FGUtils.ODD);
+            isEven = !isEven;
         }
     }
 
     void AddMonthlyTotals(bool costs)
     {
-        var colourMax = costs ? Color.red : Color.green;
+        var colourMax = costs ? FGUtils.NEGATIVE : FGUtils.POSITIVE;
         
         List<string> row = new();
-        row.Add("<b><i>Total</i></b>");
+        row.Add("<i>Total</i>");
 
         for (int i = 0; i < 12; i++)
             row.Add(manager.Database.TotalEntriesForMonth(i + 1, costs) == 0 ? "-" :
@@ -121,7 +123,7 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
         row.Add("");
         row.Add("");
         
-        AddBalanceSheetRow(row);
+        AddBalanceSheetRow(row, isEven ? FGUtils.EVEN : FGUtils.ODD);
     }
 
     void AddBalanceBalanceSheetRow()
@@ -146,7 +148,7 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
             row.Add(FGUtils.FormatLargeNumber(
                 balance,
                 true,
-                balance >= 0 ? Color.green : Color.red,
+                balance >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE,
                 10000));
         }
         
@@ -156,16 +158,16 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
         row.Add(FGUtils.FormatLargeNumber(
             weeklyTotal,
             true,
-            weeklyTotal >= 0 ? Color.green : Color.red,
+            weeklyTotal >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE,
             1000));
         
         row.Add(FGUtils.FormatLargeNumber(
             monthlyTotal,
             true,
-            monthlyTotal >= 0 ? Color.green : Color.red,
+            monthlyTotal >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE,
             7500));
             
-        AddBalanceSheetRow(row);
+        AddBalanceSheetRow(row, FGUtils.EVEN);
     }
     
     #endregion

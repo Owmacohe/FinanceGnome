@@ -252,7 +252,7 @@ public class FGTransactionController : MonoBehaviour
     {
         value.GetComponent<Image>().color = FGUtils.GraduatedColourLerp(
             Color.white,
-            Color.HSVToRGB(entry.IsCost ? 0 : 0.33f, 0.5f, 1), 
+            entry.IsCost ? FGUtils.NEGATIVE : FGUtils.POSITIVE,
             entry.Value / 3000f,
             6);
     }

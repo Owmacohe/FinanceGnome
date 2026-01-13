@@ -40,6 +40,17 @@ public static class FGUtils
         return Color.Lerp(a, b, lerpAmount);
     }
     
+    #region Colours
+    
+    public static Color POSITIVE = Color.green;
+    public static Color NEGATIVE = Color.red;
+
+    public static Color EMPTY = new(0, 0, 0, 0);
+    public static Color EVEN = Color.HSVToRGB(0, 0, 0.2f);
+    public static Color ODD = Color.HSVToRGB(0, 0, 0.25f);
+    
+    #endregion
+    
     #region Formatting
     
     public static string ALPHA => "abcdefghijklmnopqrstuvwxyz" +
