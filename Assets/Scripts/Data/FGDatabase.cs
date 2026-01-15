@@ -70,7 +70,7 @@ public class FGDatabase
     
     #region Months
 
-    public int TotalMonths() => ValidEntries.Select(entry => entry.Date.Month).Distinct().ToList().Count;
+    public int TotalMonths() => TotalMonthsInCategory(ValidEntries);
 
     public float TotalForMonth(int month, bool costs) => ValidEntries
         .Where(entry => entry.IsCost == costs && entry.Date.Month == month)
@@ -93,8 +93,9 @@ public class FGDatabase
         .Where(entry => entry.Category == category && entry.IsCost == costs)
         .ToList();
 
-    int TotalMonthsInCategory(List<FGEntry> categoryEntries) =>
-        categoryEntries.Select(entry => entry.Date.Month).Distinct().ToList().Count;
+    int TotalMonthsInCategory(List<FGEntry> categoryEntries) => categoryEntries.Count > 0
+        ? categoryEntries.OrderByDescending(entry => entry.Date.Month).ToList()[0].Date.Month
+        : 0;
     
     public float TotalForCategory(List<FGEntry> categoryEntries) =>
         categoryEntries.Sum(entry => entry.Value);

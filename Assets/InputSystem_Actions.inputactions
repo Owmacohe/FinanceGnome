@@ -89,12 +89,12 @@
                 },
                 {
                     "name": "Control",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "03198180-8066-40d1-b905-9a14f8189024",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Z",

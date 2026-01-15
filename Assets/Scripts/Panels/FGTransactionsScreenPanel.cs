@@ -58,7 +58,11 @@ public class FGTransactionsScreenPanel : MonoBehaviour
         transaction.OnSubmitPressed += index =>
         {
             int transactionIndex = transactions.IndexOf(transaction) + 1;
-            if (transactionIndex >= transactions.Count) transactionIndex = 0; // TODO: skip over ignored
+
+            while (transactionIndex < transactions.Count && transactions[transactionIndex].Entry.Ignore)
+                transactionIndex++;
+            
+            if (transactionIndex >= transactions.Count) transactionIndex = 0;
             
             transactions[transactionIndex].Select(index);
         };

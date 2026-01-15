@@ -100,12 +100,6 @@ public class FGManager : MonoBehaviour
             Debug.LogError("Database is null");
             return;
         }
-
-        if (!File.Exists(path))
-        {
-            Debug.LogError("File does not exist");
-            return;
-        }
         
         File.WriteAllText(path, Database.ToString());
         Debug.Log($"Saved <b>{Database.Name}</b> to <i>{path}</i>");
@@ -137,6 +131,8 @@ public class FGManager : MonoBehaviour
         
         Debug.Log($"Loaded <b>{Database.Name}</b> from <i>{path}</i>");
         
+        PlayerPrefs.SetString(RECENT_PATH, path);
+        
         // TODO: clear old balance sheet
         // TODO: clear old transactions
         
@@ -144,8 +140,6 @@ public class FGManager : MonoBehaviour
         transactionsScreen.InstantiateTransactions();
         importScreen.InstantiateImportRules();
         SetBalanceSheet();
-        
-        PlayerPrefs.SetString(RECENT_PATH, path);
         
         if (thenSave) Save(path);
     }

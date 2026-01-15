@@ -26,7 +26,7 @@ public class FGTransactionController : MonoBehaviour
     TMP_InputField currentField;
 
     int lineNumber;
-    FGEntry entry;
+    [HideInInspector] public FGEntry Entry;
     Action onSave;
 
     const string HIGHLIGHTER = "<mark=#A8CEFF>";
@@ -38,7 +38,7 @@ public class FGTransactionController : MonoBehaviour
     {
         fields = new() { date, description, value, category, note  };
         
-        this.entry = entry;
+        Entry = entry;
         this.onSave = onSave;
 
         this.lineNumber = lineNumber;
@@ -89,7 +89,7 @@ public class FGTransactionController : MonoBehaviour
         
         category.onSelect.AddListener(_ => currentField = category);
         category.onDeselect.AddListener(newValue => OnCategorySet(newValue, false));
-        category.onSubmit.AddListener(_ => OnSubmit());
+        category.onSubmit.AddListener(_ => OnSubmit(true));
         
         note.onSelect.AddListener(_ => currentField = note);
         note.onDeselect.AddListener(OnNoteSet);
@@ -115,14 +115,14 @@ public class FGTransactionController : MonoBehaviour
 
     public void Refresh()
     {
-        OnDateSet(FGUtils.DateToString(entry.Date));
-        OnDescriptionSet(entry.Description);
-        OnValueSet(entry.Value.ToString());
-        OnCategorySet(entry.Category, false);
-        OnNoteSet(entry.Note);
+        OnDateSet(FGUtils.DateToString(Entry.Date));
+        OnDescriptionSet(Entry.Description);
+        OnValueSet(Entry.Value.ToString());
+        OnCategorySet(Entry.Category, false);
+        OnNoteSet(Entry.Note);
         
-        isCost.isOn = entry.IsCost;
-        ignore.isOn = entry.Ignore;
+        isCost.isOn = Entry.IsCost;
+        ignore.isOn = Entry.Ignore;
         
         IgnoreCheck();
     }
@@ -132,12 +132,12 @@ public class FGTransactionController : MonoBehaviour
     void OnDateSet(string newValue)
     {
         var formatted = FGUtils.FormatString(newValue, FGEntry.DATE_WHITELIST);
-        var temp = FGUtils.TryParseDateTime(formatted, entry.Date, out var failed);
+        var temp = FGUtils.TryParseDateTime(formatted, Entry.Date, out var failed);
 
         if (!failed)
         {
-            entry.Date = temp;
-            date.SetTextWithoutNotify(FGUtils.DateToString(entry.Date));
+            Entry.Date = temp;
+            date.SetTextWithoutNotify(FGUtils.DateToString(Entry.Date));
 
             if (dateChanged)
             {
@@ -152,8 +152,8 @@ public class FGTransactionController : MonoBehaviour
     void OnDescriptionSet(string newValue)
     {
         var formatted = FGUtils.FormatString(newValue, FGEntry.DESCRIPTION_WHITELIST);
-        entry.Description = formatted;
-        description.SetTextWithoutNotify(entry.Description);
+        Entry.Description = formatted;
+        description.SetTextWithoutNotify(Entry.Description);
 
         if (descriptionChanged)
         {
@@ -168,10 +168,10 @@ public class FGTransactionController : MonoBehaviour
     {
         var formatted = FGUtils.FormatString(newValue, FGEntry.VALUE_WHITELIST);
         
-        if (formatted == "") entry.Value = 0;
-        else if (float.TryParse(formatted, out float outValue)) entry.Value = outValue;
+        if (formatted == "") Entry.Value = 0;
+        else if (float.TryParse(formatted, out float outValue)) Entry.Value = outValue;
         
-        value.SetTextWithoutNotify(FGUtils.FormatLargeNumber(entry.Value, false));
+        value.SetTextWithoutNotify(FGUtils.FormatLargeNumber(Entry.Value, false));
         ValueCheck();
 
         if (valueChanged)
@@ -185,8 +185,8 @@ public class FGTransactionController : MonoBehaviour
 
     void OnIsCostSet(bool newValue)
     {
-        entry.IsCost = newValue;
-        isCost.SetIsOnWithoutNotify(entry.IsCost);
+        Entry.IsCost = newValue;
+        isCost.SetIsOnWithoutNotify(Entry.IsCost);
             
         ValueCheck();
             
@@ -207,8 +207,8 @@ public class FGTransactionController : MonoBehaviour
         }
         
         var formatted = FGUtils.FormatString(newValue, FGEntry.DESCRIPTION_WHITELIST);
-        entry.Category = formatted;
-        category.SetTextWithoutNotify(entry.Category);
+        Entry.Category = formatted;
+        category.SetTextWithoutNotify(Entry.Category);
 
         if (categoryChanged)
         {
@@ -222,8 +222,8 @@ public class FGTransactionController : MonoBehaviour
     void OnNoteSet(string newValue)
     {
         var formatted = FGUtils.FormatString(newValue, FGEntry.DESCRIPTION_WHITELIST);
-        entry.Note = formatted;
-        note.SetTextWithoutNotify(entry.Note);
+        Entry.Note = formatted;
+        note.SetTextWithoutNotify(Entry.Note);
 
         if (noteChanged)
         {
@@ -236,8 +236,8 @@ public class FGTransactionController : MonoBehaviour
 
     void OnIgnoreSet(bool newValue)
     {
-        entry.Ignore = newValue;
-        ignore.SetIsOnWithoutNotify(entry.Ignore);
+        Entry.Ignore = newValue;
+        ignore.SetIsOnWithoutNotify(Entry.Ignore);
 
         IgnoreCheck();
             
@@ -252,19 +252,19 @@ public class FGTransactionController : MonoBehaviour
     {
         value.GetComponent<Image>().color = FGUtils.GraduatedColourLerp(
             Color.white,
-            entry.IsCost ? FGUtils.NEGATIVE : FGUtils.POSITIVE,
-            entry.Value / 3000f,
+            Entry.IsCost ? FGUtils.NEGATIVE : FGUtils.POSITIVE,
+            Entry.Value / 3000f,
             6);
     }
 
     void IgnoreCheck()
     {
-        date.interactable = !entry.Ignore;
-        description.interactable = !entry.Ignore;
-        value.interactable = !entry.Ignore;
-        isCost.interactable = !entry.Ignore;
-        category.interactable = !entry.Ignore;
-        note.interactable = !entry.Ignore;
+        date.interactable = !Entry.Ignore;
+        description.interactable = !Entry.Ignore;
+        value.interactable = !Entry.Ignore;
+        isCost.interactable = !Entry.Ignore;
+        category.interactable = !Entry.Ignore;
+        note.interactable = !Entry.Ignore;
     }
     
     public void ModifyLineNumber(int amount = 0)
@@ -275,7 +275,16 @@ public class FGTransactionController : MonoBehaviour
 
     public void Select(int index) => fields[index].Select();
     
-    void OnSubmit() => OnSubmitPressed?.Invoke(fields.IndexOf(currentField));
+    void OnSubmit(bool isCategory = false)
+    {
+        if (isCategory)
+        {
+            OnCategorySet(category.text, true);
+            currentField = category;
+        }
+        
+        OnSubmitPressed?.Invoke(fields.IndexOf(currentField));
+    }
 
-    public void Remove() => OnRemove?.Invoke(entry, true);
+    public void Remove() => OnRemove?.Invoke(Entry, true);
 }
