@@ -78,7 +78,7 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
             var entries = manager.Database.EntriesInCategory(i, costs);
             if (entries.Count == 0 || manager.Database.TotalForCategory(entries) == 0) continue;
             
-            row.Add(string.IsNullOrEmpty(i) ? "N/A" : i);
+            row.Add(string.IsNullOrEmpty(i) ? "N/A" : $"<color=#{FGUtils.StringToColourHex(i)}>{i}</color>");
 
             for (int j = 0; j < 12; j++)
                 row.Add(manager.Database.TotalEntriesInCategoryForMonth(entries, j + 1) == 0 ? "-" :
