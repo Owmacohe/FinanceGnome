@@ -28,6 +28,13 @@ public class FGImportScreenPanel : MonoBehaviour
         var importRuleController = Instantiate(importRulePrefab, importRuleParent);
         importRuleController.Initialize(importRule, OnValueChanged);
         importRules.Add(importRuleController);
+
+        importRuleController.OnMove += (importRule, up, undoable) =>
+        {
+            MoveImportRule(importRuleController, importRule, up);
+            
+            if (undoable) FGUndoController.Instance.SaveUndo(() => MoveImportRule(importRuleController, importRule, !up));
+        };
         
         importRuleController.OnRemove += (importRule, undoable) =>
         {
@@ -71,6 +78,19 @@ public class FGImportScreenPanel : MonoBehaviour
         AddImportRule(importRule, true);
         
         OnValueChanged();
+    }
+
+    void MoveImportRule(FGImportRuleController importRuleController, FGImportRule importRule, bool up)
+    {
+        var index = importRuleController.transform.GetSiblingIndex() + (up ? -1 : 1);
+
+        if (index >= importRules.Count || index < 0) return;
+            
+        manager.Database.ImportRules.Remove(importRule);
+        manager.Database.ImportRules.Insert(index, importRule);
+        OnValueChanged();
+            
+        importRuleController.transform.SetSiblingIndex(index);
     }
 
     void OnValueChanged()

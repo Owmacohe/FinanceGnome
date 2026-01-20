@@ -25,6 +25,7 @@ public class FGImportRuleController : MonoBehaviour
     FGImportRule importRule;
     Action onSave;
 
+    public Action<FGImportRule, bool, bool> OnMove;
     public Action<FGImportRule, bool> OnRemove;
     public Action<int> OnSubmitPressed;
     
@@ -165,6 +166,8 @@ public class FGImportRuleController : MonoBehaviour
     }
     
     #endregion
+
+    public void Move(bool up) => OnMove?.Invoke(importRule, up, true);
 
     public void Select(int index) => fields[index].Select();
 
