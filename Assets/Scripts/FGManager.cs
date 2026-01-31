@@ -42,7 +42,7 @@ public class FGManager : MonoBehaviour
         Instance = this;
         Database = new(DefaultDatabaseName);
 
-        versionNumber.text = Application.version;
+        versionNumber.text = $"<sprite name=\"fg\"> {Application.version}";
         
         splashScreen.Initialize();
         balanceSheetScreen.Initialize();

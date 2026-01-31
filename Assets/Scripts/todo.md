@@ -1,6 +1,4 @@
 - Add import source
 - Custom colour coding
-- ~~Option to group by similar cost within same day~~
 - Date range filter
-- Font change
 - Colour palette swap
