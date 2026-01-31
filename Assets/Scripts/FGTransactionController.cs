@@ -209,7 +209,7 @@ public class FGTransactionController : MonoBehaviour
         var formatted = FGUtils.FormatString(newValue, FGEntry.DESCRIPTION_WHITELIST);
         Entry.Category = formatted;
         category.SetTextWithoutNotify(Entry.Category);
-        category.textComponent.color = FGUtils.StringToColour(Entry.Category);
+        // category.textComponent.color = FGUtils.StringToColour(Entry.Category);
 
         if (categoryChanged)
         {

@@ -140,7 +140,7 @@ public class FGImportRuleController : MonoBehaviour
         var formatted = FGUtils.FormatString(newValue, FGUtils.ALL);
         importRule.Result = formatted;
         result.SetTextWithoutNotify(importRule.Result);
-        result.textComponent.color = FGUtils.StringToColour(importRule.Result);
+        // result.textComponent.color = FGUtils.StringToColour(importRule.Result);
 
         if (resultChanged)
         {

@@ -49,24 +49,24 @@ public static class FGUtils
     public static Color EVEN = Color.HSVToRGB(0, 0, 0.2f);
     public static Color ODD = Color.HSVToRGB(0, 0, 0.25f);
 
-    public static string StringToColourHex(string s) => ColorUtility.ToHtmlStringRGB(StringToColour(s));
+    // public static string StringToColourHex(string s) => ColorUtility.ToHtmlStringRGB(StringToColour(s));
 
-    public static Color StringToColour(string s)
-    {
-        if (string.IsNullOrEmpty(s)) return Color.white;
-        
-        int sum = s.Sum(c => c);
-        
-        Vector2 hashes = new Vector3(sum % 7, sum % 13);
-        
-        float max = hashes.x >= hashes.y ? hashes.x : hashes.y;
-        hashes /= max;
-        
-        return Color.HSVToRGB(
-            Mathf.Lerp(0.5f, 0.9f, hashes.x),
-            Mathf.Lerp(0.2f, 0.45f, hashes.y),
-            1);
-    }
+    // public static Color StringToColour(string s)
+    // {
+    //     if (string.IsNullOrEmpty(s)) return Color.white;
+    //     
+    //     int sum = s.Sum(c => c);
+    //     
+    //     Vector2 hashes = new Vector3(sum % 7, sum % 13);
+    //     
+    //     float max = hashes.x >= hashes.y ? hashes.x : hashes.y;
+    //     hashes /= max;
+    //     
+    //     return Color.HSVToRGB(
+    //         Mathf.Lerp(0.5f, 0.9f, hashes.x),
+    //         Mathf.Lerp(0.2f, 0.45f, hashes.y),
+    //         1);
+    // }
     
     #endregion
     
