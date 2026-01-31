@@ -1,4 +1,4 @@
 - Add import source
-- Custom colour coding
+- Custom colour coding for categories
 - Date range filter
 - Colour palette swap
