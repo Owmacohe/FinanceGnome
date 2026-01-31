@@ -9,7 +9,7 @@ public class FGDatabase
     
     public List<FGEntry> Entries { get; }
     public List<FGEntry> ValidEntries => Entries.Where(entry => !entry.Ignore).ToList();
-    public List<FGEntry> SortedEntries => Entries.OrderBy(entry => entry.Date).ToList();
+    public List<FGEntry> SortedEntries => Entries.OrderBy(entry => entry.Date).ThenBy(entry => entry.Value).ToList();
     
     public List<string> Categories => ValidEntries
         .Select(entry => entry.Category)
@@ -45,16 +45,14 @@ public class FGDatabase
         List<FGEntry> temp = new();
 
         foreach (var i in entries.Split('\n'))
-        {
             if (!string.IsNullOrEmpty(i))
-            {
-                var entry = new FGEntry(i);
-                temp.Add(entry);
-                Entries.Add(entry);
-            }
-        }
+                temp.Add(new FGEntry(i));
 
-        return temp.OrderBy(entry => entry.Date).ToList();
+        var ordered = temp.OrderBy(entry => entry.Date).ThenBy(entry => entry.Value).ToList();
+        
+        Entries.AddRange(ordered);
+
+        return ordered;
     }
     
     public string GetMatchingCategory(string value)
