@@ -221,6 +221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2360296189812095546}
   - component: {fileID: 2507118230376550118}
+  - component: {fileID: 2596337164491033879}
   m_Layer: 5
   m_Name: Balance Sheet Cell
   m_TagString: Untagged
@@ -263,3 +264,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FGBalanceSheetCellController
   text: {fileID: 2329582768790293309}
   background: {fileID: 3677525243768658972}
+--- !u!114 &2596337164491033879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8866719488056289455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5f4e990ab324fc6a49ba16553742a0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FGTooltipTrigger
+  Description: 

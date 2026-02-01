@@ -35,7 +35,7 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
     
     #region AddBalanceSheetRow
     
-    void AddBalanceSheetRow(List<string> row, Color backgroundColour)
+    void AddBalanceSheetRow(List<string> row, Color backgroundColour, List<string> tooltips = null)
     {
         if (row.Count != 15)
         {
@@ -43,13 +43,16 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
             return;
         }
         
-        foreach (var i in row)
+        for (int i = 0; i < row.Count; i++)
         {
             var cell = Instantiate(balanceSheetCell, balanceSheetParent);
-            var text = string.IsNullOrEmpty(i) ? "" : i;
+            var text = string.IsNullOrEmpty(row[i]) ? "" : row[i];
 
             cell.Initialize(text, backgroundColour);
             cell.name = text;
+
+            if (tooltips != null && tooltips.Count > i)
+                cell.GetComponent<FGTooltipTrigger>().Description = tooltips[i];
         }
     }
     
@@ -74,34 +77,42 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
         foreach (var i in manager.Database.Categories)
         {
             List<string> row = new();
+            List<string> tooltips = new();
 
             var entries = manager.Database.EntriesInCategory(i, costs);
             if (entries.Count == 0 || manager.Database.TotalForCategory(entries) == 0) continue;
             
             row.Add(string.IsNullOrEmpty(i) ? "N/A" : i);
             // row.Add(string.IsNullOrEmpty(i) ? "N/A" : $"<color=#{FGUtils.StringToColourHex(i)}>{i}</color>");
+            tooltips.Add("");
 
             for (int j = 0; j < 12; j++)
-                row.Add(manager.Database.TotalEntriesInCategoryForMonth(entries, j + 1) == 0 ? "-" :
+            {
+                var entriesForMonth = manager.Database.EntriesInCategoryForMonth(entries, j + 1);
+                
+                row.Add(entriesForMonth.Count == 0 ? "-" :
                     FGUtils.FormatLargeNumber(
                         manager.Database.TotalForMonthByCategory(entries, j + 1),
                         true,
-                        colourMax,
-                        3000));
+                        colourMax));
+                
+                tooltips.Add(entriesForMonth.Count == 0 ? "" : string.Join('\n', entriesForMonth
+                        .GetRange(Mathf.Max(0, entriesForMonth.Count - 4), Mathf.Min(4, entriesForMonth.Count))
+                        .Select(entry => $"{FGUtils.FormatLargeNumber(entry.Value, true, colourMax)} - {entry.Description}")) +
+                    (entriesForMonth.Count > 4 ? "\n..." : ""));
+            }
             
             row.Add(FGUtils.FormatLargeNumber(
                 manager.Database.AverageForCategoryByWeek(entries),
                 true,
-                colourMax,
-                500));
+                colourMax));
             
             row.Add(FGUtils.FormatLargeNumber(
                 manager.Database.AverageForCategoryByMonth(entries),
                 true,
-                colourMax,
-                2000));
+                colourMax));
 
-            AddBalanceSheetRow(row, isEven ? FGUtils.EVEN : FGUtils.ODD);
+            AddBalanceSheetRow(row, isEven ? FGUtils.EVEN : FGUtils.ODD, tooltips);
             isEven = !isEven;
         }
     }
@@ -118,8 +129,7 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
                 FGUtils.FormatLargeNumber(
                     manager.Database.TotalForMonth(i + 1, costs),
                     true,
-                    colourMax,
-                    3000));
+                    colourMax));
         
         row.Add("");
         row.Add("");
@@ -149,8 +159,7 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
             row.Add(FGUtils.FormatLargeNumber(
                 balance,
                 true,
-                balance >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE,
-                10000));
+                balance >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE));
         }
         
         var weeklyTotal = manager.Database.ValueTotal / (manager.Database.TotalMonths() * (52f/12f));
@@ -159,14 +168,12 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
         row.Add(FGUtils.FormatLargeNumber(
             weeklyTotal,
             true,
-            weeklyTotal >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE,
-            1000));
+            weeklyTotal >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE));
         
         row.Add(FGUtils.FormatLargeNumber(
             monthlyTotal,
             true,
-            monthlyTotal >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE,
-            7500));
+            monthlyTotal >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE));
             
         AddBalanceSheetRow(row, FGUtils.EVEN);
     }

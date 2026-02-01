@@ -49,6 +49,9 @@ public static class FGUtils
     public static Color EVEN = Color.HSVToRGB(0, 0, 0.2f);
     public static Color ODD = Color.HSVToRGB(0, 0, 0.25f);
 
+    public static float AMOUNT_MAX = 1000;
+    public static int GRADUATIONS = 5;
+
     // public static string StringToColourHex(string s) => ColorUtility.ToHtmlStringRGB(StringToColour(s));
 
     // public static Color StringToColour(string s)
@@ -88,13 +91,13 @@ public static class FGUtils
             .Where(c => whitelist.Contains(c)));
     }
     
-    public static string FormatLargeNumber(float value, bool addDollarSign, Color colourMax, float amountMax)
+    public static string FormatLargeNumber(float value, bool addDollarSign, Color colourMax)
     {
         var colour = ColorUtility.ToHtmlStringRGB(GraduatedColourLerp(
             Color.white,
             colourMax,
-            Mathf.Abs(value) / amountMax,
-            4));
+            Mathf.Abs(value) / AMOUNT_MAX,
+            GRADUATIONS));
         
         return $"<color=#{colour}>{FormatLargeNumber(value, addDollarSign)}</color>";
     }

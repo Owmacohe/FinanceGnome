@@ -80,8 +80,8 @@ public class FGDatabase
     public int TotalEntriesForMonth(int month, bool costs) =>
         ValidEntries.Where(entry => entry.IsCost == costs && entry.Date.Month == month).ToList().Count;
 
-    public int TotalEntriesInCategoryForMonth(List<FGEntry> categoryEntries, int month) =>
-        categoryEntries.Where(entry => entry.Date.Month == month).ToList().Count;
+    public List<FGEntry> EntriesInCategoryForMonth(List<FGEntry> categoryEntries, int month) =>
+        categoryEntries.Where(entry => entry.Date.Month == month).ToList();
     
     #endregion
     
