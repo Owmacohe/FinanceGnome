@@ -130,6 +130,8 @@ public class FGImportScreenPanel : MonoBehaviour
         }
         
         manager.SetTransactions();
+        manager.transactionsScreen.OnScroll(0);
+        manager.transactionsScreen.SetScroll();
     }
 
     public void Apply()

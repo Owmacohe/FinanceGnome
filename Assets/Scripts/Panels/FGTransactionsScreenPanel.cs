@@ -1,18 +1,24 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using NativeFileBrowser;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FGTransactionsScreenPanel : MonoBehaviour
 {
     [SerializeField] Transform transactionsParent;
     [SerializeField] FGTransactionController transactionPrefab;
+    [SerializeField] Scrollbar scrollbar;
     
     List<FGTransactionController> transactions = new();
     int addEntriesAmount = 1;
     
     FGManager manager;
+
+    const string SCROLL_AMOUNT = "scrollAmount";
+    bool saveScroll = true;
 
     public void Initialize()
     {
@@ -98,4 +104,28 @@ public class FGTransactionsScreenPanel : MonoBehaviour
         
         manager.Save();
     }
+
+    #region Scrolling
+    
+    public IEnumerator PauseScroll()
+    {
+        saveScroll = false;
+        yield return new WaitForFixedUpdate();
+        saveScroll = true;
+        SetScroll();
+    }
+
+    public void OnScroll(float amount)
+    {
+        if (!saveScroll) return;
+        
+        PlayerPrefs.SetFloat(SCROLL_AMOUNT, FGUtils.RoundTo(amount, 2));
+    }
+
+    public void SetScroll()
+    {
+        scrollbar.value = PlayerPrefs.GetFloat(SCROLL_AMOUNT);
+    }
+    
+    #endregion
 }

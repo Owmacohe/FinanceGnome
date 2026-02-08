@@ -56,7 +56,11 @@ public class FGManager : MonoBehaviour
     
     #region Top Row
     
-    public void SetTransactions() => SetScreen(transactionsButton, transactionsScreen.gameObject);
+    public void SetTransactions()
+    {
+        StartCoroutine(transactionsScreen.PauseScroll());
+        SetScreen(transactionsButton, transactionsScreen.gameObject);
+    }
     
     public void SetBalanceSheet()
     {
