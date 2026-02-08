@@ -2,6 +2,6 @@
 - Custom colour coding for categories
 - Date range filter
 - Colour palette swap
-- Autofill colour
 - Category autofill include ignored
 - Auto-snap to bottom of transaction list
+- Add scrollbar back for transactions

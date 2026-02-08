@@ -29,7 +29,7 @@ public class FGTransactionController : MonoBehaviour
     [HideInInspector] public FGEntry Entry;
     Action onSave;
 
-    const string HIGHLIGHTER = "<mark=#A8CEFF>";
+    const string HIGHLIGHTER = "<mark=#808080aa>";
 
     public Action<FGEntry, bool> OnRemove;
     public Action<int> OnSubmitPressed;
