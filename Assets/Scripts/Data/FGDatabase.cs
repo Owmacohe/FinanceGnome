@@ -11,7 +11,7 @@ public class FGDatabase
     public List<FGEntry> ValidEntries => Entries.Where(entry => !entry.Ignore).ToList();
     public List<FGEntry> SortedEntries => Entries.OrderBy(entry => entry.Date).ThenBy(entry => entry.Value).ToList();
     
-    public List<string> Categories => ValidEntries
+    public List<string> Categories(bool includeInvalid) => (includeInvalid ? Entries : ValidEntries)
         .Select(entry => entry.Category)
         .Distinct()
         .OrderBy(category => category)
@@ -57,7 +57,7 @@ public class FGDatabase
     
     public string GetMatchingCategory(string value)
     {
-        var matching = Categories
+        var matching = Categories(true)
             .Where(category =>
                 category.Length >= value.Length &&
                 category.Substring(0, value.Length).ToLower() == value.ToLower())

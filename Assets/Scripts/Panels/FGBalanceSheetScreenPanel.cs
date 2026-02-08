@@ -74,7 +74,7 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
 
         isEven = false;
         
-        foreach (var i in manager.Database.Categories)
+        foreach (var i in manager.Database.Categories(false))
         {
             List<string> row = new();
             List<string> tooltips = new();

@@ -5,3 +5,4 @@
 - Category autofill include ignored
 - Auto-snap to bottom of transaction list
 - Add scrollbar back for transactions
+- Improve performance
