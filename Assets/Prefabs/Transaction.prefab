@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: $
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3d57b6381bf804d4fb60f76a068833b4, type: 2}
-  m_sharedMaterial: {fileID: -3334924030437057441, guid: 3d57b6381bf804d4fb60f76a068833b4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e0262592b0137b42b191a8550b54661, type: 2}
+  m_sharedMaterial: {fileID: -1743646374717134242, guid: 0e0262592b0137b42b191a8550b54661, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -203,8 +203,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 123456
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3d57b6381bf804d4fb60f76a068833b4, type: 2}
-  m_sharedMaterial: {fileID: -3334924030437057441, guid: 3d57b6381bf804d4fb60f76a068833b4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e0262592b0137b42b191a8550b54661, type: 2}
+  m_sharedMaterial: {fileID: -1743646374717134242, guid: 0e0262592b0137b42b191a8550b54661, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -656,7 +656,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3545322137648768416, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 35
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 3545322137648768416, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
       propertyPath: m_SizeDelta.y

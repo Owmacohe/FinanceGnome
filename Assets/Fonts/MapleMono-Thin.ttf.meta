@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: bc9826076af4c70478e6dc91530cf548
+guid: 2a2738edee45ec44b8ed3dbce960b154
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Open Sans
+  - Maple Mono
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
