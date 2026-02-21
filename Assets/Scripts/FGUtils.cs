@@ -26,10 +26,13 @@ public static class FGUtils
         return Mathf.Round(f * multiplier) / multiplier;
     }
 
-    public static Color GraduatedColourLerp(Color a, Color b, float amount, int graduations)
+    public static Color GraduatedColourLerp(float amount, int graduations, params Color[] colours)
     {
-        if (amount <= 0) return a;
-        if (amount >= 1) return b;
+        if (graduations <= 0) throw new Exception("Graduations must be > 0!");
+        if (colours.Length < 2) throw new Exception("Not enough colours to lerp!");
+        
+        if (amount <= 0) return colours[0];
+        if (amount >= 1) return colours[^1];
         
         float graduationAmount = 1f / graduations;
         float lerpAmount = 0;
@@ -37,20 +40,30 @@ public static class FGUtils
         while (amount > lerpAmount)
             lerpAmount += graduationAmount;
         
-        return Color.Lerp(a, b, lerpAmount);
+        int fromIndex = Mathf.FloorToInt(lerpAmount * (colours.Length - 1));
+        int toIndex = fromIndex + 1;
+
+        if (fromIndex >= colours.Length - 1) return colours[^1];
+        
+        return Color.Lerp(colours[fromIndex], colours[toIndex], lerpAmount);
     }
     
     #region Colours
     
-    public static Color POSITIVE = Color.green;
-    public static Color NEGATIVE = Color.red;
+    public static Color POSITIVE_LOW = Color.HSVToRGB(0.3f, 0.1f, 1f);
+    public static Color POSITIVE = Color.HSVToRGB(0.3f, 1f, 1f);
+    public static Color POSITIVE_HIGH = Color.HSVToRGB(0.45f, 1f, 1f);
+    
+    public static Color NEGATIVE_LOW = Color.HSVToRGB(0f, 0.1f, 1f);
+    public static Color NEGATIVE = Color.HSVToRGB(0f, 1f, 1f);
+    public static Color NEGATIVE_HIGH = Color.HSVToRGB(0.9f, 1f, 1f);
 
     public static Color EMPTY = new(0, 0, 0, 0);
     public static Color EVEN = Color.HSVToRGB(0, 0, 0.2f);
     public static Color ODD = Color.HSVToRGB(0, 0, 0.25f);
 
-    public static float AMOUNT_MAX = 1000;
-    public static int GRADUATIONS = 5;
+    public static float AMOUNT_MAX = 500;
+    public static int GRADUATIONS = 10;
 
     // public static string StringToColourHex(string s) => ColorUtility.ToHtmlStringRGB(StringToColour(s));
 
@@ -91,13 +104,13 @@ public static class FGUtils
             .Where(c => whitelist.Contains(c)));
     }
     
-    public static string FormatLargeNumber(float value, bool addDollarSign, Color colourMax)
+    public static string FormatLargeNumber(float value, bool addDollarSign, Color colourMin, Color colourMax)
     {
         var colour = ColorUtility.ToHtmlStringRGB(GraduatedColourLerp(
-            Color.white,
-            colourMax,
             Mathf.Abs(value) / AMOUNT_MAX,
-            GRADUATIONS));
+            GRADUATIONS,
+            colourMin,
+            colourMax));
         
         return $"<color=#{colour}>{FormatLargeNumber(value, addDollarSign)}</color>";
     }

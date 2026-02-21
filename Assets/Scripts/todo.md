@@ -2,4 +2,3 @@
 - Custom colour coding for categories
 - Date range filter
 - Colour palette swap
-- Improve performance

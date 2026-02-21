@@ -252,10 +252,10 @@ public class FGTransactionController : MonoBehaviour
     void ValueCheck()
     {
         value.GetComponent<Image>().color = FGUtils.GraduatedColourLerp(
-            Color.white,
-            Entry.IsCost ? FGUtils.NEGATIVE : FGUtils.POSITIVE,
-            Entry.Value / 3_000f,
-            6);
+            Entry.Value / FGUtils.AMOUNT_MAX,
+            FGUtils.GRADUATIONS,
+            Entry.IsCost ? FGUtils.NEGATIVE_LOW : FGUtils.POSITIVE_LOW,
+            Entry.IsCost ? FGUtils.NEGATIVE : FGUtils.POSITIVE);
     }
 
     void IgnoreCheck()

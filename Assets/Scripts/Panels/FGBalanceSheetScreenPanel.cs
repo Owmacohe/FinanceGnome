@@ -68,7 +68,9 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
 
     void AddCategoryEntries(bool costs)
     {
+        var colourMin = costs ? FGUtils.NEGATIVE_LOW : FGUtils.POSITIVE_LOW;
         var colourMax = costs ? FGUtils.NEGATIVE : FGUtils.POSITIVE;
+        // var colourMaxHigh = costs ? FGUtils.NEGATIVE_HIGH : FGUtils.POSITIVE_HIGH;
 
         Dictionary<string, List<TMP_Text>> temp = new();
 
@@ -94,22 +96,25 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
                     FGUtils.FormatLargeNumber(
                         manager.Database.TotalForMonthByCategory(entries, j + 1),
                         true,
+                        colourMin,
                         colourMax));
                 
                 tooltips.Add(entriesForMonth.Count == 0 ? "" : string.Join('\n', entriesForMonth
                         .GetRange(Mathf.Max(0, entriesForMonth.Count - 4), Mathf.Min(4, entriesForMonth.Count))
-                        .Select(entry => $"{FGUtils.FormatLargeNumber(entry.Value, true, colourMax)} - {entry.Description}")) +
+                        .Select(entry => $"{FGUtils.FormatLargeNumber(entry.Value, true, colourMin, colourMax)} - {entry.Description}")) +
                     (entriesForMonth.Count > 4 ? "\n..." : ""));
             }
             
             row.Add(FGUtils.FormatLargeNumber(
                 manager.Database.AverageForCategoryByWeek(entries),
                 true,
+                colourMin,
                 colourMax));
             
             row.Add(FGUtils.FormatLargeNumber(
                 manager.Database.AverageForCategoryByMonth(entries),
                 true,
+                colourMin,
                 colourMax));
 
             AddBalanceSheetRow(row, isEven ? FGUtils.EVEN : FGUtils.ODD, tooltips);
@@ -119,7 +124,9 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
 
     void AddMonthlyTotals(bool costs)
     {
+        var colourMin = costs ? FGUtils.NEGATIVE_LOW : FGUtils.POSITIVE_LOW;
         var colourMax = costs ? FGUtils.NEGATIVE : FGUtils.POSITIVE;
+        // var colourMaxHigh = costs ? FGUtils.NEGATIVE_HIGH : FGUtils.POSITIVE_HIGH;
         
         List<string> row = new();
         row.Add("<i>Total</i>");
@@ -129,6 +136,7 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
                 FGUtils.FormatLargeNumber(
                     manager.Database.TotalForMonth(i + 1, costs),
                     true,
+                    colourMin,
                     colourMax));
         
         row.Add("");
@@ -159,6 +167,7 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
             row.Add(FGUtils.FormatLargeNumber(
                 balance,
                 true,
+                balance >= 0 ? FGUtils.POSITIVE_LOW : FGUtils.NEGATIVE_LOW,
                 balance >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE));
         }
         
@@ -168,11 +177,13 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
         row.Add(FGUtils.FormatLargeNumber(
             weeklyTotal,
             true,
+            weeklyTotal >= 0 ? FGUtils.POSITIVE_LOW : FGUtils.NEGATIVE_LOW,
             weeklyTotal >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE));
         
         row.Add(FGUtils.FormatLargeNumber(
             monthlyTotal,
             true,
+            monthlyTotal >= 0 ? FGUtils.POSITIVE_LOW : FGUtils.NEGATIVE_LOW,
             monthlyTotal >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE));
             
         AddBalanceSheetRow(row, FGUtils.EVEN);
