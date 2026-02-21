@@ -15,7 +15,10 @@ public class FGImportRuleController : MonoBehaviour
     [SerializeField] TMP_InputField result;
     [SerializeField] TMP_InputField note;
     
-    bool comparisonChanged,
+    bool ifPropertyChanged,
+         comparatorChanged,
+         comparisonChanged,
+         thenPropertyChanged,
          resultChanged,
          noteChanged;
     
@@ -48,17 +51,17 @@ public class FGImportRuleController : MonoBehaviour
         
         #region OnValueChanged
         
-        ifProperty.onValueChanged.AddListener(OnIfPropertySet);
-        comparator.onValueChanged.AddListener(OnComparatorSet);
+        ifProperty.onValueChanged.AddListener(index => { ifPropertyChanged = true; OnIfPropertySet(index); });
+        comparator.onValueChanged.AddListener(index => { comparatorChanged = true; OnComparatorSet(index); });
         comparison.onValueChanged.AddListener(_ => comparisonChanged = true);
         
-        thenProperty.onValueChanged.AddListener(OnThenPropertySet);
+        thenProperty.onValueChanged.AddListener(index => { thenPropertyChanged = true; OnThenPropertySet(index); });
         result.onValueChanged.AddListener(_ => resultChanged = true);
         note.onValueChanged.AddListener(_ => noteChanged = true);
         
         #endregion
         
-        #region OnSelectOnDeselect/OnSubmit
+        #region OnSelect/OnDeselect/OnSubmit
         
         comparison.onSelect.AddListener(_ => currentField = comparison);
         comparison.onDeselect.AddListener(OnComparisonSet);
@@ -95,7 +98,11 @@ public class FGImportRuleController : MonoBehaviour
         importRule.ifProperty = (FGImportRuleIfProperty)Enum.GetValues(typeof(FGImportRuleIfProperty)).GetValue(index);
         ifProperty.SetValueWithoutNotify(index);
 
-        onSave?.Invoke();
+        if (ifPropertyChanged)
+        {
+            onSave?.Invoke();
+            ifPropertyChanged = false;
+        }
 
         currentField = null;
     }
@@ -105,7 +112,11 @@ public class FGImportRuleController : MonoBehaviour
         importRule.Comparator = (FGImportRuleComparator)Enum.GetValues(typeof(FGImportRuleComparator)).GetValue(index);
         comparator.SetValueWithoutNotify(index);
 
-        onSave?.Invoke();
+        if (comparatorChanged)
+        {
+            onSave?.Invoke();
+            comparatorChanged = false;
+        }
 
         currentField = null;
     }
@@ -130,7 +141,11 @@ public class FGImportRuleController : MonoBehaviour
         importRule.thenProperty = (FGImportRuleThenProperty)Enum.GetValues(typeof(FGImportRuleThenProperty)).GetValue(index);
         thenProperty.SetValueWithoutNotify(index);
 
-        onSave?.Invoke();
+        if (thenPropertyChanged)
+        {
+            onSave?.Invoke();
+            thenPropertyChanged = false;
+        }
 
         currentField = null;
     }
