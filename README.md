@@ -5,6 +5,8 @@
 - A cost/income spreadsheet is automatically calculated based on imported transactions.
 - More to come!
 
+Finance Gnome uses the [Maple Mono](https://font.subf.dev) font.
+
 <img src="https://img.itch.zone/aW1hZ2UvNDE2ODkwNS8yNTYwNDA5OC5wbmc=/original/wZBEzD.png" width="100%">
 <div style="display:flex; flex-direction:row;">
   <img src="https://img.itch.zone/aW1hZ2UvNDE2ODkwNS8yNTYwNDA5OS5wbmc=/original/6IyI%2Bx.png" width="49%">
