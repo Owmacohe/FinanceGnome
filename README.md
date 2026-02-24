@@ -1,5 +1,5 @@
 # Finance Gnome
-*v1.0.0*
+*v1.0.1*
 
 - Make use of the powerful Import Rule system to automatically categorize, adjust, and disable transactions as they are imported.
 - A cost/income spreadsheet is automatically calculated based on imported transactions.
