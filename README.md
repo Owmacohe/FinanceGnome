@@ -1,3 +1,5 @@
+<img src="https://github.com/Owmacohe/FinanceGnome/blob/main/Assets/FinangeGnome.png" width="20%">
+
 # Finance Gnome
 *v1.0.1*
 
