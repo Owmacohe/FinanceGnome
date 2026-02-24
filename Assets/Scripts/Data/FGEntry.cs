@@ -11,6 +11,8 @@ public class FGEntry
     public string Category { get; set; }
     public string Note { get; set; }
     public bool Ignore { get; set; }
+    
+    public bool IsNew { get; set; }
 
     public FGEntry(string entry)
     {

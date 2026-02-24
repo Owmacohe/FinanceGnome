@@ -10,6 +10,7 @@ public class FGTransactionController : MonoBehaviour
     [SerializeField] TMP_Text line;
     [SerializeField] TMP_InputField date;
     [SerializeField] TMP_InputField description;
+    [SerializeField] GameObject newTransactionMarker;
     [SerializeField] TMP_InputField value;
     [SerializeField] Toggle isCost;
     [SerializeField] TMP_InputField category;
@@ -111,6 +112,8 @@ public class FGTransactionController : MonoBehaviour
             
             fields[index].Select();
         };
+        
+        newTransactionMarker.SetActive(entry.IsNew);
     }
 
     public void Refresh()

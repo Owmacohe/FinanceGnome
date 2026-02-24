@@ -137,9 +137,6 @@ public class FGManager : MonoBehaviour
         
         PlayerPrefs.SetString(RECENT_PATH, path);
         
-        // TODO: clear old balance sheet
-        // TODO: clear old transactions
-        
         balanceSheetScreen.InstantiateBalanceSheetCells();
         transactionsScreen.InstantiateTransactions();
         importScreen.InstantiateImportRules();

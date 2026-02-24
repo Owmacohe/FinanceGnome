@@ -24,6 +24,20 @@ public class FGTransactionsScreenPanel : MonoBehaviour
     {
         manager = FGManager.Instance;
     }
+
+    public void Refresh()
+    {
+        foreach (var i in transactions)
+            Destroy(i.gameObject);
+        
+        transactions.Clear();
+
+        manager.Database.Entries = manager.Database.SortedEntries;
+
+        InstantiateTransactions();
+        
+        OnValueChanged();
+    }
     
     public void InstantiateTransactions()
     {

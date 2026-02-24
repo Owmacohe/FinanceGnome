@@ -7,7 +7,7 @@ public class FGDatabase
     
     public List<FGImportRule> ImportRules { get; }
     
-    public List<FGEntry> Entries { get; }
+    public List<FGEntry> Entries { get; set; }
     public List<FGEntry> ValidEntries => Entries.Where(entry => !entry.Ignore).ToList();
     public List<FGEntry> SortedEntries => Entries.OrderBy(entry => entry.Date).ThenBy(entry => entry.Value).ToList();
     

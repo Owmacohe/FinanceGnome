@@ -116,6 +116,8 @@ public class FGImportScreenPanel : MonoBehaviour
 
             for (int i = 0; i < entries.Count; i++)
             {
+                entries[i].IsNew = true;
+                
                 CheckEntry(entries[i]);
                 
                 manager.transactionsScreen.AddTransaction(
@@ -124,7 +126,7 @@ public class FGImportScreenPanel : MonoBehaviour
                     false);
             }
             
-            manager.transactionsScreen.OnValueChanged();
+            manager.transactionsScreen.Refresh();
             
             Debug.Log($"Imported from <i>{path}</i>");
         }
