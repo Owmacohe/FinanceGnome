@@ -7,8 +7,9 @@
 
 Finance Gnome uses the [Maple Mono](https://font.subf.dev) font.
 
-<img src="https://img.itch.zone/aW1hZ2UvNDE2ODkwNS8yNTYwNDA5OC5wbmc=/original/wZBEzD.png" width="100%">
+<img src="https://img.itch.zone/aW1hZ2UvNDE2ODkwNS8yNTc4MTQ5NC5wbmc=/original/GMt3ak.png" width="100%">
+<img src="https://img.itch.zone/aW1hZ2UvNDE2ODkwNS8yNTc4MTQ5Ni5wbmc=/original/JFwTmd.png" width="100%">
 <div style="display:flex; flex-direction:row;">
-  <img src="https://img.itch.zone/aW1hZ2UvNDE2ODkwNS8yNTYwNDA5OS5wbmc=/original/6IyI%2Bx.png" width="49%">
-  <img src="https://img.itch.zone/aW1hZ2UvNDE2ODkwNS8yNTYwNDA5Ny5wbmc=/original/%2BDGLHl.png" width="49%">
+  <img src="https://img.itch.zone/aW1hZ2UvNDE2ODkwNS8yNTc4MTQ5NS5wbmc=/original/u9p1s1.png" width="49%">
+  <img src="https://img.itch.zone/aW1hZ2UvNDE2ODkwNS8yNTc4MTQ5Ny5wbmc=/original/OeeFAZ.png" width="49%">
 </div>
