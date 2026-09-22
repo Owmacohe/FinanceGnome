@@ -20,6 +20,7 @@ public class FGManager : MonoBehaviour
     [SerializeField] Button transactionsButton;
     [SerializeField] Button balanceSheetButton;
     [SerializeField] Button importButton;
+    [SerializeField] Button budgetButton;
     
     [Header("Panels")]
     [SerializeField] List<GameObject> allPanels;
@@ -27,6 +28,7 @@ public class FGManager : MonoBehaviour
     public FGBalanceSheetScreenPanel balanceSheetScreen;
     public FGTransactionsScreenPanel transactionsScreen;
     public FGImportScreenPanel importScreen;
+    public FGBudgetScreenPanel budgetScreen;
     
     public const string DefaultDatabaseName = "New Document";
     public const string RECENT_PATH = "recentPath";
@@ -48,6 +50,7 @@ public class FGManager : MonoBehaviour
         balanceSheetScreen.Initialize();
         transactionsScreen.Initialize();
         importScreen.Initialize();
+        budgetScreen.Initialize();
         
         splashScreen.CheckRecentDatabase();
     }
@@ -70,6 +73,8 @@ public class FGManager : MonoBehaviour
     }
     
     public void SetImport() => SetScreen(importButton, importScreen.gameObject);
+    
+    public void SetBudget() => SetScreen(budgetButton, budgetScreen.gameObject);
 
     void SetScreen(Button button, GameObject screen)
     {
@@ -140,6 +145,7 @@ public class FGManager : MonoBehaviour
         balanceSheetScreen.InstantiateBalanceSheetCells();
         transactionsScreen.InstantiateTransactions();
         importScreen.InstantiateImportRules();
+        // TODO)): load budget data
         SetBalanceSheet();
         
         if (thenSave) Save(path);

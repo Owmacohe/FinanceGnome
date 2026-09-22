@@ -54,6 +54,7 @@ public class FGSplashScreenPanel : MonoBehaviour
             manager.transactionsScreen.InstantiateTransactions();
             manager.balanceSheetScreen.InstantiateBalanceSheetCells();
             manager.importScreen.InstantiateImportRules();
+            // TODO)): load budget data
             manager.SetBalanceSheet();
         }
         

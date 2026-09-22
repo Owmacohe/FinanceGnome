@@ -34,7 +34,7 @@ public class FGImportRuleController : MonoBehaviour
     
     public void Initialize(FGImportRule importRule, Action onSave)
     {
-        fields = new() { comparison, result, note  };
+        fields = new() { comparison, result, note };
         
         this.importRule = importRule;
         this.onSave = onSave;
