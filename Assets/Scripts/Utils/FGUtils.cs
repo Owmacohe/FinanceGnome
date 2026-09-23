@@ -88,12 +88,19 @@ public static class FGUtils
     
     #region Formatting
     
+    public const string HIGHLIGHTER = "<mark=#808080aa>";
+    
     public static string ALPHA => "abcdefghijklmnopqrstuvwxyz" +
                                   "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public static string NUMERIC => "0123456789";
     public static string SPECIAL => "!@#$%^&*()-_=+[]{}\\|;:<>.? ";
     public static string ALPHANUMERIC => ALPHA + NUMERIC;
     public static string ALL => ALPHANUMERIC + SPECIAL;
+    
+    public static string DATE_WHITELIST => $"/-{NUMERIC}";
+    public static string DESCRIPTION_WHITELIST => $"{ALL}";
+    public static string VALUE_WHITELIST => $".{NUMERIC}";
+    public static string BOOL_WHITELIST => $"{ALPHANUMERIC}";
     
     public static string FormatString(string s, string whitelist, string blacklist = "", string remove = "")
     {

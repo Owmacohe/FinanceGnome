@@ -176,6 +176,7 @@ public class FGImportRule
     }
 
     public override string ToString() =>
+        $"1," +
         $"{ifProperty}," +
         $"{Comparator}," +
         $"{Comparison}," +

@@ -414,6 +414,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5db82bb569dd4906af8cb2a8137af762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FGBudgetEntryController
+  useCategory: {fileID: 5296503222996445214}
+  category: {fileID: 2196567026631434106}
+  useAverageValue: {fileID: 7243969751149264231}
+  manualValue: {fileID: 7871646619134285848}
+  track: {fileID: 7642350194503132166}
 --- !u!114 &4771029880217858341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,12 +588,16 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6695894601565598722}
+    - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Move
       objectReference: {fileID: 0}
     - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: FGImportRuleController, Assembly-CSharp
+      value: FGBudgetEntryController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
@@ -773,12 +782,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6695894601565598722}
+    - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Remove
       objectReference: {fileID: 0}
     - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: FGImportRuleController, Assembly-CSharp
+      value: FGBudgetEntryController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -1004,6 +1017,17 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7871646619134285848 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4793355979874808061, guid: 4a2b5956272dfa140a3ac5962eb9aae5, type: 3}
+  m_PrefabInstance: {fileID: 3438743759935367397}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3491311117138881784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TMP_InputField
 --- !u!1001 &3613331327740515048
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1097,12 +1121,16 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6695894601565598722}
+    - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Move
       objectReference: {fileID: 0}
     - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: FGImportRuleController, Assembly-CSharp
+      value: FGBudgetEntryController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 733203651109789590, guid: f8044cac792ee49cba3bf421f54aace1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
@@ -1228,7 +1256,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 87587164716597380, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
       propertyPath: m_Text
-      value: Manual
+      value: Use Average
       objectReference: {fileID: 0}
     - target: {fileID: 1084595781716848227, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1360,7 +1388,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4137317320681079996, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
       propertyPath: m_Name
-      value: Manual Value
+      value: Average Value
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1372,6 +1400,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3545322137648768416, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
   m_PrefabInstance: {fileID: 5909524482642743544}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7243969751149264231 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3928573940670672287, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
+  m_PrefabInstance: {fileID: 5909524482642743544}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Toggle
 --- !u!1001 &6668155589714446745
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1521,6 +1560,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
+--- !u!114 &7642350194503132166 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3928573940670672287, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
+  m_PrefabInstance: {fileID: 6668155589714446745}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Toggle
 --- !u!224 &7906508532463512633 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3545322137648768416, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
@@ -1630,6 +1680,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 5369442679104694475}
   m_SourcePrefab: {fileID: 100100000, guid: 4a2b5956272dfa140a3ac5962eb9aae5, type: 3}
+--- !u!114 &2196567026631434106 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4793355979874808061, guid: 4a2b5956272dfa140a3ac5962eb9aae5, type: 3}
+  m_PrefabInstance: {fileID: 6700984390175780743}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4843007875108039578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TMP_InputField
 --- !u!1 &4843007875108039578 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2291065351307691037, guid: 4a2b5956272dfa140a3ac5962eb9aae5, type: 3}
@@ -1809,6 +1870,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
+--- !u!114 &5296503222996445214 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3928573940670672287, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
+  m_PrefabInstance: {fileID: 9152982065772365185}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Toggle
 --- !u!224 &5635814042326016033 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3545322137648768416, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}

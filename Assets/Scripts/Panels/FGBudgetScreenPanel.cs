@@ -1,8 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class FGBudgetScreenPanel : MonoBehaviour
 {
-    // TODO)): properties
+    [SerializeField] Transform budgetEntryIncomeSibling;
+    [SerializeField] Transform budgetEntryCostSibling;
+    [SerializeField] FGBudgetEntryController budgetEntryPrefab;
+    
+    List<FGBudgetEntryController> budgetEntries = new();
     
     FGManager manager;
     
@@ -13,7 +18,8 @@ public class FGBudgetScreenPanel : MonoBehaviour
     
     public void InstantiateBudgetEntries()
     {
-        // TODO))
+        foreach (var i in manager.Database.BudgetEntries)
+            AddBudgetEntry(i, false);
     }
 
     void AddBudgetEntry(FGBudgetEntry budgetEntry, bool undoable)
@@ -23,12 +29,24 @@ public class FGBudgetScreenPanel : MonoBehaviour
 
     void AddBudgetEntry()
     {
-        // TODO))
+        var budgetEntry = new FGBudgetEntry();
+        manager.Database.BudgetEntries.Add(budgetEntry);
+        AddBudgetEntry(budgetEntry, true);
+        
+        OnValueChanged();
     }
 
     void MoveBudgetEntry(FGBudgetEntryController budgetEntryController, FGBudgetEntry budgetEntry, bool up)
     {
-        // TODO))
+        var index = budgetEntryController.transform.GetSiblingIndex() + (up ? -1 : 1);
+
+        if (index >= budgetEntries.Count || index < 0) return;
+            
+        manager.Database.BudgetEntries.Remove(budgetEntry);
+        manager.Database.BudgetEntries.Insert(index, budgetEntry);
+        OnValueChanged();
+            
+        budgetEntryController.transform.SetSiblingIndex(index);
     }
 
     void OnValueChanged()

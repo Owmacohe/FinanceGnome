@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class FGDatabase
 {
     public string Name { get; set; }
     
     public List<FGImportRule> ImportRules { get; }
+    public List<FGBudgetEntry> BudgetEntries { get; }
     
     public List<FGEntry> Entries { get; set; }
     public List<FGEntry> ValidEntries => Entries.Where(entry => !entry.Ignore).ToList();
@@ -23,6 +25,7 @@ public class FGDatabase
     {
         Name = name;
         ImportRules = new();
+        BudgetEntries = new();
         Entries = new();
         
         if (!string.IsNullOrEmpty(entries))
@@ -31,10 +34,32 @@ public class FGDatabase
             {
                 if (!string.IsNullOrEmpty(i))
                 {
-                    int count = FGUtils.Split(i).Count;
+                    var split = FGUtils.Split(i);
+                    
+                    if (int.TryParse(split[0], out var typeIndex) && typeIndex is >= 0 and <= 2)
+                    {
+                        var data = i.Substring(i.IndexOf(',') + 1);
 
-                    if (count == 6) ImportRules.Add(new(i));
-                    else if (count == 7) Entries.Add(new(i));
+                        switch (typeIndex)
+                        {
+                            case 0:
+                                Entries.Add(new(data));
+                                break;
+                            
+                            case 1:
+                                ImportRules.Add(new(data));
+                                break;
+                            
+                            case 2:
+                                BudgetEntries.Add(new(data));
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        if (split.Count == 6) ImportRules.Add(new(i));
+                        else if (split.Count == 7) Entries.Add(new(i));
+                    }
                 }
             }
         }
@@ -106,5 +131,8 @@ public class FGDatabase
     
     #endregion
 
-    public override string ToString() => $"{string.Join('\n', ImportRules)}\n{string.Join('\n', SortedEntries)}";
+    public override string ToString() =>
+        $"{string.Join('\n', ImportRules)}\n" +
+        $"{string.Join('\n', BudgetEntries)}\n" +
+        $"{string.Join('\n', SortedEntries)}";
 }

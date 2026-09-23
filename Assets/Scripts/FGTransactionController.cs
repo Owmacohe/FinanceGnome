@@ -30,8 +30,6 @@ public class FGTransactionController : MonoBehaviour
     [HideInInspector] public FGEntry Entry;
     Action onSave;
 
-    const string HIGHLIGHTER = "<mark=#808080aa>";
-
     public Action<FGEntry, bool> OnRemove;
     public Action<int> OnSubmitPressed;
 
@@ -56,14 +54,14 @@ public class FGTransactionController : MonoBehaviour
         value.onValueChanged.AddListener(_ => valueChanged = true);
         category.onValueChanged.AddListener(newValue =>
         {
-            if (newValue.Contains(HIGHLIGHTER))
-                newValue = newValue.Remove(newValue.IndexOf(HIGHLIGHTER));
+            if (newValue.Contains(FGUtils.HIGHLIGHTER))
+                newValue = newValue.Remove(newValue.IndexOf(FGUtils.HIGHLIGHTER));
 
             string matching = FGManager.Instance.Database.GetMatchingCategory(newValue);
             category.SetTextWithoutNotify(
                 newValue +
                 (matching != null && !string.IsNullOrEmpty(newValue)
-                    ? $"{HIGHLIGHTER}{matching.Substring(newValue.Length)}"
+                    ? $"{FGUtils.HIGHLIGHTER}{matching.Substring(newValue.Length)}"
                     : ""));
             
             categoryChanged = true;
@@ -134,7 +132,7 @@ public class FGTransactionController : MonoBehaviour
 
     void OnDateSet(string newValue)
     {
-        var formatted = FGUtils.FormatString(newValue, FGEntry.DATE_WHITELIST);
+        var formatted = FGUtils.FormatString(newValue, FGUtils.DATE_WHITELIST);
         var temp = FGUtils.TryParseDateTime(formatted, Entry.Date, out var failed);
 
         if (!failed)
@@ -154,7 +152,7 @@ public class FGTransactionController : MonoBehaviour
 
     void OnDescriptionSet(string newValue)
     {
-        var formatted = FGUtils.FormatString(newValue, FGEntry.DESCRIPTION_WHITELIST);
+        var formatted = FGUtils.FormatString(newValue, FGUtils.DESCRIPTION_WHITELIST);
         Entry.Description = formatted;
         description.SetTextWithoutNotify(Entry.Description);
 
@@ -169,7 +167,7 @@ public class FGTransactionController : MonoBehaviour
 
     void OnValueSet(string newValue)
     {
-        var formatted = FGUtils.FormatString(newValue, FGEntry.VALUE_WHITELIST);
+        var formatted = FGUtils.FormatString(newValue, FGUtils.VALUE_WHITELIST);
         
         if (formatted == "") Entry.Value = 0;
         else if (float.TryParse(formatted, out float outValue)) Entry.Value = outValue;
@@ -200,8 +198,8 @@ public class FGTransactionController : MonoBehaviour
 
     void OnCategorySet(string newValue, bool setMatchingCategory)
     {
-        if (newValue.Contains(HIGHLIGHTER))
-            newValue = newValue.Remove(newValue.IndexOf(HIGHLIGHTER));
+        if (newValue.Contains(FGUtils.HIGHLIGHTER))
+            newValue = newValue.Remove(newValue.IndexOf(FGUtils.HIGHLIGHTER));
 
         if (setMatchingCategory && !string.IsNullOrEmpty(newValue))
         {
@@ -209,7 +207,7 @@ public class FGTransactionController : MonoBehaviour
             if (matching != null) newValue = matching;
         }
         
-        var formatted = FGUtils.FormatString(newValue, FGEntry.DESCRIPTION_WHITELIST);
+        var formatted = FGUtils.FormatString(newValue, FGUtils.DESCRIPTION_WHITELIST);
         Entry.Category = formatted;
         category.SetTextWithoutNotify(Entry.Category);
         // category.textComponent.color = FGUtils.StringToColour(Entry.Category);
@@ -225,7 +223,7 @@ public class FGTransactionController : MonoBehaviour
 
     void OnNoteSet(string newValue)
     {
-        var formatted = FGUtils.FormatString(newValue, FGEntry.DESCRIPTION_WHITELIST);
+        var formatted = FGUtils.FormatString(newValue, FGUtils.DESCRIPTION_WHITELIST);
         Entry.Note = formatted;
         note.SetTextWithoutNotify(Entry.Note);
 
