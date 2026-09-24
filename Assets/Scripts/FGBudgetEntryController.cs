@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class FGBudgetEntryController : MonoBehaviour
 {
+    [Header("Entry")]
     [SerializeField] Toggle useCategory;
     [SerializeField] TMP_InputField category;
     
@@ -13,6 +14,9 @@ public class FGBudgetEntryController : MonoBehaviour
     [SerializeField] TMP_InputField manualValue;
     
     [SerializeField] Toggle track;
+    
+    [Header("Dynamic")]
+    [SerializeField] TMP_Text total;
 
     bool categoryChanged,
          manualValueChanged;
@@ -34,6 +38,14 @@ public class FGBudgetEntryController : MonoBehaviour
         this.budgetEntry = budgetEntry;
         this.onSave = onSave;
         
+        OnUseCategorySet(budgetEntry.UseCategory);
+        OnCategorySet(budgetEntry.Category, false);
+        
+        OnUseAverageValueSet(budgetEntry.UseAverageValue);
+        OnManualValueSet(budgetEntry.ManualValue.ToString());
+        
+        OnTrackSet(budgetEntry.Track);
+        
         #region Listeners
         
         #region OnValueChanged
@@ -46,7 +58,7 @@ public class FGBudgetEntryController : MonoBehaviour
             string matching = FGManager.Instance.Database.GetMatchingCategory(newValue);
             category.SetTextWithoutNotify(
                 newValue +
-                (matching != null && !string.IsNullOrEmpty(newValue) && this.budgetEntry.UseCategory
+                (matching != null && !string.IsNullOrEmpty(newValue)
                     ? $"{FGUtils.HIGHLIGHTER}{matching.Substring(newValue.Length)}"
                     : ""));
             
@@ -95,6 +107,10 @@ public class FGBudgetEntryController : MonoBehaviour
     {
         budgetEntry.UseCategory = newValue;
         useCategory.SetIsOnWithoutNotify(budgetEntry.UseCategory);
+
+        useAverageValue.interactable = newValue;
+        if (!newValue) OnUseAverageValueSet(false);
+        RefreshBudgetEntryRow();
             
         onSave?.Invoke();
 
@@ -117,6 +133,10 @@ public class FGBudgetEntryController : MonoBehaviour
         category.SetTextWithoutNotify(budgetEntry.Category);
         // category.textComponent.color = FGUtils.StringToColour(Entry.Category);
 
+        bool hasCategory = FGManager.Instance.Database.Categories(false).Contains(newValue);
+        useCategory.interactable = hasCategory;
+        if (!hasCategory) OnUseCategorySet(false);
+
         if (categoryChanged)
         {
             onSave?.Invoke();
@@ -130,7 +150,10 @@ public class FGBudgetEntryController : MonoBehaviour
     {
         budgetEntry.UseAverageValue = newValue;
         useAverageValue.SetIsOnWithoutNotify(budgetEntry.UseAverageValue);
-            
+        
+        manualValue.interactable = !newValue;
+        RefreshAverageValue();
+        
         onSave?.Invoke();
 
         currentField = null;
@@ -159,6 +182,8 @@ public class FGBudgetEntryController : MonoBehaviour
     {
         budgetEntry.Track = newValue;
         track.SetIsOnWithoutNotify(budgetEntry.Track);
+        
+        // TODO)): tracking
             
         onSave?.Invoke();
 
@@ -192,4 +217,35 @@ public class FGBudgetEntryController : MonoBehaviour
     }
 
     public void Remove() => OnRemove?.Invoke(budgetEntry, true);
+
+    void RefreshAverageValue()
+    {
+        if (!budgetEntry.UseAverageValue) return;
+        
+        var database = FGManager.Instance.Database;
+        OnManualValueSet(
+            database.AverageForCategoryByMonth(
+                database.EntriesInCategory(budgetEntry.Category, budgetEntry.IsCost)).ToString());
+    }
+
+    void RefreshTotal()
+    {
+        if (budgetEntry.UseCategory && budgetEntry.IsCost)
+        {
+            var database = FGManager.Instance.Database;
+            var amount = database.TotalForMonthByCategory(
+                database.EntriesInCategory(budgetEntry.Category, budgetEntry.IsCost),
+                DateTime.Today.Month);
+            var formatted = FGUtils.FormatLargeNumber(amount, true, FGUtils.POSITIVE, FGUtils.NEGATIVE, budgetEntry.ManualValue);
+
+            total.text = $"{FGUtils.GetMonth(DateTime.Today.Month)} total = {formatted}";
+        }
+        else total.text = "";
+    }
+
+    public void RefreshBudgetEntryRow()
+    {
+        RefreshAverageValue();
+        RefreshTotal();
+    }
 }

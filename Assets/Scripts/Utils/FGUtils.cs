@@ -111,10 +111,10 @@ public static class FGUtils
             .Where(c => whitelist.Contains(c)));
     }
     
-    public static string FormatLargeNumber(float value, bool addDollarSign, Color colourMin, Color colourMax)
+    public static string FormatLargeNumber(float value, bool addDollarSign, Color colourMin, Color colourMax, float amountMax = 500)
     {
         var colour = ColorUtility.ToHtmlStringRGB(GraduatedColourLerp(
-            Mathf.Abs(value) / AMOUNT_MAX,
+            Mathf.Abs(value) / amountMax,
             GRADUATIONS,
             colourMin,
             colourMax));
@@ -183,5 +183,21 @@ public static class FGUtils
         }
     }
     
+    public static string GetMonth(int index) => new[]
+    {
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    }[index];
+
     #endregion
 }

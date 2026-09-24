@@ -74,7 +74,12 @@ public class FGManager : MonoBehaviour
     
     public void SetImport() => SetScreen(importButton, importScreen.gameObject);
     
-    public void SetBudget() => SetScreen(budgetButton, budgetScreen.gameObject);
+    public void SetBudget()
+    {
+        SetScreen(budgetButton, budgetScreen.gameObject);
+        
+        budgetScreen.RefreshBudgetEntryRows();
+    }
 
     void SetScreen(Button button, GameObject screen)
     {

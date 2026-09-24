@@ -7,7 +7,8 @@ public class FGDatabase
     public string Name { get; set; }
     
     public List<FGImportRule> ImportRules { get; }
-    public List<FGBudgetEntry> BudgetEntries { get; }
+    public List<FGBudgetEntry> IncomeBudgetEntries { get; }
+    public List<FGBudgetEntry> CostBudgetEntries { get; }
     
     public List<FGEntry> Entries { get; set; }
     public List<FGEntry> ValidEntries => Entries.Where(entry => !entry.Ignore).ToList();
@@ -25,7 +26,8 @@ public class FGDatabase
     {
         Name = name;
         ImportRules = new();
-        BudgetEntries = new();
+        IncomeBudgetEntries = new();
+        CostBudgetEntries = new();
         Entries = new();
         
         if (!string.IsNullOrEmpty(entries))
@@ -51,7 +53,10 @@ public class FGDatabase
                                 break;
                             
                             case 2:
-                                BudgetEntries.Add(new(data));
+                                FGBudgetEntry newBudgetEntry = new(data);
+                                
+                                if (newBudgetEntry.IsCost) CostBudgetEntries.Add(newBudgetEntry);
+                                else IncomeBudgetEntries.Add(newBudgetEntry);
                                 break;
                         }
                     }
@@ -133,6 +138,7 @@ public class FGDatabase
 
     public override string ToString() =>
         $"{string.Join('\n', ImportRules)}\n" +
-        $"{string.Join('\n', BudgetEntries)}\n" +
+        $"{string.Join('\n', IncomeBudgetEntries)}\n" +
+        $"{string.Join('\n', CostBudgetEntries)}\n" +
         $"{string.Join('\n', SortedEntries)}";
 }
