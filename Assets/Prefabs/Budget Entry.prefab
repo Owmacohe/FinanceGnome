@@ -148,7 +148,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 120, y: 0}
+  m_SizeDelta: {x: 150, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6665316702810886123
 CanvasRenderer:
@@ -178,7 +178,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: February total = $100.00 ($100.00 left)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0e0262592b0137b42b191a8550b54661, type: 2}
   m_sharedMaterial: {fileID: -1743646374717134242, guid: 0e0262592b0137b42b191a8550b54661, type: 2}
@@ -577,7 +577,7 @@ MonoBehaviour:
   category: {fileID: 2196567026631434106}
   useAverageValue: {fileID: 7243969751149264231}
   manualValue: {fileID: 7871646619134285848}
-  track: {fileID: 7642350194503132166}
+  essential: {fileID: 7642350194503132166}
   total: {fileID: 8250886627925613369}
 --- !u!114 &4771029880217858341
 MonoBehaviour:
@@ -633,7 +633,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 30, y: 0}
+  m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4421834471640468304
 MonoBehaviour:
@@ -1637,7 +1637,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 87587164716597380, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
       propertyPath: m_Text
-      value: Track Value
+      value: Essential
       objectReference: {fileID: 0}
     - target: {fileID: 1084595781716848227, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1769,7 +1769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4137317320681079996, guid: 9438c36ef37700347ae34deaf7de55f4, type: 3}
       propertyPath: m_Name
-      value: Track
+      value: Essential
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

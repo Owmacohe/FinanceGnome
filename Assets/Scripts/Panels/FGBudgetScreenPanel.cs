@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NativeFileBrowser;
+using TMPro;
 using UnityEngine;
 
 public class FGBudgetScreenPanel : MonoBehaviour
@@ -8,6 +10,7 @@ public class FGBudgetScreenPanel : MonoBehaviour
     [SerializeField] Transform budgetEntryIncomeParent;
     [SerializeField] Transform budgetEntryCostParent;
     [SerializeField] FGBudgetEntryController budgetEntryPrefab;
+    [SerializeField] TMP_Text calculations;
     
     List<FGBudgetEntryController> incomeBudgetEntries = new();
     List<FGBudgetEntryController> costBudgetEntries = new();
@@ -61,6 +64,8 @@ public class FGBudgetScreenPanel : MonoBehaviour
 
             budgetEntries.Remove(budgetEntryController);
             Destroy(budgetEntryController.gameObject); // TODO: potential undo bug
+
+            RefreshCalculations();
         
             if (undoable) FGUndoController.Instance.SaveUndo(() =>
             {
@@ -70,6 +75,8 @@ public class FGBudgetScreenPanel : MonoBehaviour
                 OnValueChanged();
                 
                 manager.SetBudget();
+
+                RefreshCalculations();
             });
         };
 
@@ -128,5 +135,18 @@ public class FGBudgetScreenPanel : MonoBehaviour
             j.RefreshBudgetEntryRow();
     }
     
-    // TODO)): calculations
+    public void RefreshCalculations()
+    {
+        var income = BudgetEntriesData(false);
+        var costs = BudgetEntriesData(true);
+
+        var incomeTotal = income.Sum(entry => entry.ManualValue);
+        var essentialsTotal = costs.Where(entry => entry.Essential).Sum(entry => entry.ManualValue);
+        var costsTotal = costs.Sum(entry => entry.ManualValue);
+
+        calculations.text =
+            $"Budget\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal, true, FGUtils.POSITIVE, FGUtils.POSITIVE)}</b></align>\n" +
+            $"Budget\v(- Essentials)\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal - essentialsTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE, incomeTotal)}</b></align>\n" +
+            $"Budget\v(- Essentials)\v(- non-Essentials)\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal - costsTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE, incomeTotal)}</b></align>";
+    }
 }

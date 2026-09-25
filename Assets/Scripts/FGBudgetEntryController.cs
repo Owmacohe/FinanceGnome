@@ -13,7 +13,7 @@ public class FGBudgetEntryController : MonoBehaviour
     [SerializeField] Toggle useAverageValue;
     [SerializeField] TMP_InputField manualValue;
     
-    [SerializeField] Toggle track;
+    [SerializeField] Toggle essential;
     
     [Header("Dynamic")]
     [SerializeField] TMP_Text total;
@@ -44,7 +44,10 @@ public class FGBudgetEntryController : MonoBehaviour
         OnUseAverageValueSet(budgetEntry.UseAverageValue);
         OnManualValueSet(budgetEntry.ManualValue.ToString());
         
-        OnTrackSet(budgetEntry.Track);
+        OnEssentialSet(budgetEntry.Essential);
+        
+        for (int i = 0; i < essential.transform.childCount; i++)
+            essential.transform.GetChild(i).gameObject.SetActive(budgetEntry.IsCost);
         
         #region Listeners
         
@@ -83,7 +86,7 @@ public class FGBudgetEntryController : MonoBehaviour
         manualValue.onDeselect.AddListener(OnManualValueSet);
         manualValue.onSubmit.AddListener(_ => OnSubmit());
         
-        track.onValueChanged.AddListener(OnTrackSet);
+        essential.onValueChanged.AddListener(OnEssentialSet);
         
         #endregion
         
@@ -109,7 +112,7 @@ public class FGBudgetEntryController : MonoBehaviour
         useCategory.SetIsOnWithoutNotify(budgetEntry.UseCategory);
 
         useAverageValue.interactable = newValue;
-        if (!newValue) OnUseAverageValueSet(false);
+        OnUseAverageValueSet(newValue);
         RefreshBudgetEntryRow();
             
         onSave?.Invoke();
@@ -169,6 +172,10 @@ public class FGBudgetEntryController : MonoBehaviour
         manualValue.SetTextWithoutNotify(FGUtils.FormatLargeNumber(budgetEntry.ManualValue, false));
         ValueCheck();
 
+        RefreshTotal();
+        
+        FGManager.Instance.budgetScreen.RefreshCalculations();
+
         if (manualValueChanged)
         {
             onSave?.Invoke();
@@ -178,12 +185,12 @@ public class FGBudgetEntryController : MonoBehaviour
         currentField = null;
     }
     
-    void OnTrackSet(bool newValue)
+    void OnEssentialSet(bool newValue)
     {
-        budgetEntry.Track = newValue;
-        track.SetIsOnWithoutNotify(budgetEntry.Track);
+        budgetEntry.Essential = newValue;
+        essential.SetIsOnWithoutNotify(budgetEntry.Essential);
         
-        // TODO)): tracking
+        FGManager.Instance.budgetScreen.RefreshCalculations();
             
         onSave?.Invoke();
 
@@ -237,8 +244,9 @@ public class FGBudgetEntryController : MonoBehaviour
                 database.EntriesInCategory(budgetEntry.Category, budgetEntry.IsCost),
                 DateTime.Today.Month);
             var formatted = FGUtils.FormatLargeNumber(amount, true, FGUtils.POSITIVE, FGUtils.NEGATIVE, budgetEntry.ManualValue);
+            var formattedLeft = FGUtils.FormatLargeNumber(budgetEntry.ManualValue - amount, true, FGUtils.NEGATIVE, FGUtils.POSITIVE, budgetEntry.ManualValue);
 
-            total.text = $"{FGUtils.GetMonth(DateTime.Today.Month)} total = {formatted}";
+            total.text = $"{FGUtils.GetMonth(DateTime.Today.Month)} total = {formatted} ({formattedLeft} left)";
         }
         else total.text = "";
     }

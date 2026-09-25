@@ -79,6 +79,7 @@ public class FGManager : MonoBehaviour
         SetScreen(budgetButton, budgetScreen.gameObject);
         
         budgetScreen.RefreshBudgetEntryRows();
+        budgetScreen.RefreshCalculations();
     }
 
     void SetScreen(Button button, GameObject screen)

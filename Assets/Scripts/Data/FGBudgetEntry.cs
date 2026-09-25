@@ -7,7 +7,7 @@
     public float ManualValue { get; set; }
     
     public bool IsCost { get; set; }
-    public bool Track { get; set; }
+    public bool Essential { get; set; }
 
     public FGBudgetEntry(string budgetEntry)
     {
@@ -29,14 +29,14 @@
         var isCostFormatted = FGUtils.FormatString(split[4], FGUtils.BOOL_WHITELIST);
         if (bool.TryParse(isCostFormatted, out bool outIsCost)) IsCost = outIsCost;
         
-        var trackFormatted = FGUtils.FormatString(split[5], FGUtils.BOOL_WHITELIST);
-        if (bool.TryParse(trackFormatted, out bool outTrack)) Track = outTrack;
+        var essentialFormatted = FGUtils.FormatString(split[5], FGUtils.BOOL_WHITELIST);
+        if (bool.TryParse(essentialFormatted, out bool outEssential)) Essential = outEssential;
     }
 
     public FGBudgetEntry(
         bool useCategory = false, string category = "",
         bool useAverageValue = false, float manualValue = 0,
-        bool isCost = false, bool track = false)
+        bool isCost = false, bool essential = true)
     {
         UseCategory = useCategory;
         Category = category;
@@ -45,7 +45,7 @@
         ManualValue = manualValue;
 
         IsCost = isCost;
-        Track = track;
+        Essential = essential;
     }
 
     public override string ToString() =>
@@ -55,5 +55,5 @@
         $"{UseAverageValue}," +
         $"{ManualValue}," +
         $"{IsCost}," +
-        $"{Track}";
+        $"{Essential}";
 }
