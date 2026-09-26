@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NativeFileBrowser;
 using UnityEngine;
 
@@ -126,7 +127,9 @@ public class FGImportScreenPanel : MonoBehaviour
                     false);
             }
             
-            manager.transactionsScreen.Refresh();
+            var newest = entries.OrderByDescending(entry => entry.Date.Month).ToList()[0];
+            
+            manager.transactionsScreen.Refresh(newest.Date.Month);
             
             Debug.Log($"Imported from <i>{path}</i>");
         }

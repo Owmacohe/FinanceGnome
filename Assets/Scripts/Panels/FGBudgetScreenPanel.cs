@@ -142,11 +142,11 @@ public class FGBudgetScreenPanel : MonoBehaviour
 
         var incomeTotal = income.Sum(entry => entry.ManualValue);
         var essentialsTotal = costs.Where(entry => entry.Essential).Sum(entry => entry.ManualValue);
-        var costsTotal = costs.Sum(entry => entry.ManualValue);
+        var nonEssentialsTotal = costs.Where(entry => !entry.Essential).Sum(entry => entry.CurrentValue);
 
         calculations.text =
-            $"Budget\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal, true, FGUtils.POSITIVE, FGUtils.POSITIVE)}</b></align>\n" +
-            $"Budget\v(- Essentials)\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal - essentialsTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE, incomeTotal)}</b></align>\n" +
-            $"Budget\v(- Essentials)\v(- non-Essentials)\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal - costsTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE, incomeTotal)}</b></align>";
+            $"Monthly Budget\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal, true, FGUtils.POSITIVE, FGUtils.POSITIVE)}</b></align>\n" +
+            $"Monthly Budget\v(- Essentials)\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal - essentialsTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE)}</b></align>\n" +
+            $"Monthly Budget\v(- Essentials)\v(- non-Essentials)\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal - essentialsTotal - nonEssentialsTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE)}</b></align>";
     }
 }

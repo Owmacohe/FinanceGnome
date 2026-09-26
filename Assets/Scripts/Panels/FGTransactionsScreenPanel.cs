@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NativeFileBrowser;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +13,17 @@ public class FGTransactionsScreenPanel : MonoBehaviour
     [SerializeField] Transform transactionsParent;
     [SerializeField] FGTransactionController transactionPrefab;
     [SerializeField] Scrollbar scrollbar;
+
+    [Header("Months")]
+    [SerializeField] Button previousMonth;
+    [SerializeField] TMP_Text month;
+    [SerializeField] Button nextMonth;
     
     List<FGTransactionController> transactions = new();
     int addEntriesAmount = 1;
     
     FGManager manager;
+    int currentMonth;
 
     const string SCROLL_AMOUNT = "scrollAmount";
     bool saveScroll = true;
@@ -25,7 +33,7 @@ public class FGTransactionsScreenPanel : MonoBehaviour
         manager = FGManager.Instance;
     }
 
-    public void Refresh()
+    public void Refresh(int month)
     {
         foreach (var i in transactions)
             Destroy(i.gameObject);
@@ -34,15 +42,31 @@ public class FGTransactionsScreenPanel : MonoBehaviour
 
         manager.Database.Entries = manager.Database.SortedEntries;
 
-        InstantiateTransactions();
+        InstantiateTransactions(month);
         
         OnValueChanged();
     }
     
-    public void InstantiateTransactions()
+    public void InstantiateTransactions(int month)
     {
-        for (int i = 0; i < manager.Database.Entries.Count; i++)
-            AddTransaction(manager.Database.Entries[i], i + 1, false);
+        currentMonth = month;
+        
+        this.month.text = FGUtils.GetMonth(month);
+
+        var hasPreviousMonth = month > 0 &&
+                               (manager.Database.TotalEntriesForMonth(month - 1, true) +
+                                manager.Database.TotalEntriesForMonth(month - 1, false) > 0);
+        previousMonth.interactable = hasPreviousMonth;
+        
+        var hasNextMonth = month < 12 &&
+                               (manager.Database.TotalEntriesForMonth(month + 1, true) +
+                                manager.Database.TotalEntriesForMonth(month + 1, false) > 0);
+        nextMonth.interactable = hasNextMonth;
+        
+        var entries = manager.Database.Entries.Where(entry => entry.Date.Month == month).ToList();
+        
+        for (int i = 0; i < entries.Count; i++)
+            AddTransaction(entries[i], i + 1, false);
     }
     
     public void RefreshTransactions() => transactions.ForEach(transaction => transaction.Refresh());
@@ -102,9 +126,9 @@ public class FGTransactionsScreenPanel : MonoBehaviour
     {
         for (int i = 0; i < addEntriesAmount; i++)
         {
-            var entry = new FGEntry(DateTime.Today);
+            var entry = new FGEntry(new DateTime(DateTime.Today.Year, currentMonth, DateTime.Today.Day));
             manager.Database.Entries.Add(entry);
-            AddTransaction(entry, manager.Database.Entries.Count, true);
+            AddTransaction(entry, manager.Database.Entries.Count(entry => entry.Date.Month == currentMonth), true);
         }
         
         OnValueChanged();
@@ -142,4 +166,25 @@ public class FGTransactionsScreenPanel : MonoBehaviour
     }
     
     #endregion
+
+    public void PreviousMonth()
+    {
+        Refresh(currentMonth - 1);
+        OnScroll(0);
+        SetScroll();
+    }
+
+    public void NextMonth()
+    {
+        Refresh(currentMonth + 1);
+        OnScroll(0);
+        SetScroll();
+    }
+
+    public void CurrentMonth()
+    {
+        Refresh(DateTime.Today.Month);
+        OnScroll(0);
+        SetScroll();
+    }
 }

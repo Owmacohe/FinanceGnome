@@ -6,6 +6,8 @@
     public bool UseAverageValue { get; set; }
     public float ManualValue { get; set; }
     
+    public float CurrentValue { get; set; }
+    
     public bool IsCost { get; set; }
     public bool Essential { get; set; }
 

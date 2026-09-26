@@ -38,7 +38,7 @@ public class FGBudgetEntryController : MonoBehaviour
         this.budgetEntry = budgetEntry;
         this.onSave = onSave;
         
-        OnUseCategorySet(budgetEntry.UseCategory);
+        OnUseCategorySet(budgetEntry.UseCategory, true);
         OnCategorySet(budgetEntry.Category, false);
         
         OnUseAverageValueSet(budgetEntry.UseAverageValue);
@@ -74,7 +74,7 @@ public class FGBudgetEntryController : MonoBehaviour
         
         #region OnSelect/OnDeselect/OnSubmit
         
-        useCategory.onValueChanged.AddListener(OnUseCategorySet);
+        useCategory.onValueChanged.AddListener(newValue => OnUseCategorySet(newValue));
         
         category.onSelect.AddListener(_ => currentField = category);
         category.onDeselect.AddListener(newValue => OnCategorySet(newValue, false));
@@ -106,13 +106,13 @@ public class FGBudgetEntryController : MonoBehaviour
     
     #region Setters
     
-    void OnUseCategorySet(bool newValue)
+    void OnUseCategorySet(bool newValue, bool initializing  = false)
     {
         budgetEntry.UseCategory = newValue;
         useCategory.SetIsOnWithoutNotify(budgetEntry.UseCategory);
 
         useAverageValue.interactable = newValue;
-        OnUseAverageValueSet(newValue);
+        if (!initializing) OnUseAverageValueSet(newValue);
         RefreshBudgetEntryRow();
             
         onSave?.Invoke();
@@ -243,8 +243,11 @@ public class FGBudgetEntryController : MonoBehaviour
             var amount = database.TotalForMonthByCategory(
                 database.EntriesInCategory(budgetEntry.Category, budgetEntry.IsCost),
                 DateTime.Today.Month);
-            var formatted = FGUtils.FormatLargeNumber(amount, true, FGUtils.POSITIVE, FGUtils.NEGATIVE, budgetEntry.ManualValue);
-            var formattedLeft = FGUtils.FormatLargeNumber(budgetEntry.ManualValue - amount, true, FGUtils.NEGATIVE, FGUtils.POSITIVE, budgetEntry.ManualValue);
+            
+            budgetEntry.CurrentValue = amount;
+            
+            var formatted = FGUtils.FormatLargeNumber(budgetEntry.CurrentValue, true, FGUtils.POSITIVE, FGUtils.NEGATIVE, budgetEntry.ManualValue);
+            var formattedLeft = FGUtils.FormatLargeNumber(budgetEntry.ManualValue - budgetEntry.CurrentValue, true, FGUtils.NEGATIVE, FGUtils.POSITIVE, budgetEntry.ManualValue);
 
             total.text = $"{FGUtils.GetMonth(DateTime.Today.Month)} total = {formatted} ({formattedLeft} left)";
         }

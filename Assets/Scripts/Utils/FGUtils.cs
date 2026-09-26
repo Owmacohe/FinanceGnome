@@ -197,7 +197,7 @@ public static class FGUtils
         "October",
         "November",
         "December",
-    }[index];
+    }[index - 1];
 
     #endregion
 }

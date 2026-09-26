@@ -149,7 +149,7 @@ public class FGManager : MonoBehaviour
         PlayerPrefs.SetString(RECENT_PATH, path);
         
         balanceSheetScreen.InstantiateBalanceSheetCells();
-        transactionsScreen.InstantiateTransactions();
+        transactionsScreen.InstantiateTransactions(DateTime.Today.Month);
         importScreen.InstantiateImportRules();
         budgetScreen.InstantiateBudgetEntries();
         SetBalanceSheet();

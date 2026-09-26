@@ -51,7 +51,7 @@ public class FGSplashScreenPanel : MonoBehaviour
             PlayerPrefs.SetString(FGManager.RECENT_PATH, fullPath);
             CheckRecentDatabase();
 
-            manager.transactionsScreen.InstantiateTransactions();
+            manager.transactionsScreen.InstantiateTransactions(DateTime.Today.Month);
             manager.balanceSheetScreen.InstantiateBalanceSheetCells();
             manager.importScreen.InstantiateImportRules();
             manager.budgetScreen.InstantiateBudgetEntries();

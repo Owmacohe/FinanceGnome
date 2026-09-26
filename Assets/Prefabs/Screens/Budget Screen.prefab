@@ -577,12 +577,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Budget\v\v<align=center><b>$100.00</b></align>
+  m_text: 'Monthly Budget\v\v<align=center><b>$100.00</b></align>
 
-    Budget\v(- Essentials)\v\v<align=center><b>$100.00</b></align>
+    Monthly Budget\v(-
+    Essentials)\v\v<align=center><b>$100.00</b></align>
 
-    Budget\v(-
-    Essentials)\v(- non-Essentials)\v\v<align=center><b>$100.00</b></align>'
+    Monthly Budget\v(- Essentials)\v(-
+    non-Essentials)\v\v<align=center><b>$100.00</b></align>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0e0262592b0137b42b191a8550b54661, type: 2}
   m_sharedMaterial: {fileID: -1743646374717134242, guid: 0e0262592b0137b42b191a8550b54661, type: 2}
