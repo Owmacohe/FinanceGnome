@@ -100,8 +100,10 @@ public class FGDatabase
 
     public int TotalMonths() => TotalMonthsInCategory(ValidEntries);
 
-    public float TotalForMonth(int month, bool costs) => ValidEntries
-        .Where(entry => entry.IsCost == costs && entry.Date.Month == month)
+    public float TotalForMonth(int month, bool costs, List<string> categoryBlacklist = null) => ValidEntries
+        .Where(entry => entry.IsCost == costs &&
+                        entry.Date.Month == month &&
+                        (categoryBlacklist == null || !categoryBlacklist.Contains(entry.Category)))
         .Sum(entry => entry.Value);
     
     public float TotalForMonthByCategory(List<FGEntry> categoryEntries, int month) =>

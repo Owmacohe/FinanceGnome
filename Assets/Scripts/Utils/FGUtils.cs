@@ -111,10 +111,10 @@ public static class FGUtils
             .Where(c => whitelist.Contains(c)));
     }
     
-    public static string FormatLargeNumber(float value, bool addDollarSign, Color colourMin, Color colourMax, float amountMax = 500)
+    public static string FormatLargeNumber(float value, bool addDollarSign, Color colourMin, Color colourMax, bool useAbsoluteValue = false, float amountMax = 500)
     {
         var colour = ColorUtility.ToHtmlStringRGB(GraduatedColourLerp(
-            Mathf.Abs(value) / amountMax,
+            (useAbsoluteValue ? Mathf.Abs(value) : value) / amountMax,
             GRADUATIONS,
             colourMin,
             colourMax));

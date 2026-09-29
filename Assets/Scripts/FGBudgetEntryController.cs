@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class FGBudgetEntryController : MonoBehaviour
 {
     [Header("Entry")]
-    [SerializeField] Toggle useCategory;
     [SerializeField] TMP_InputField category;
     
     [SerializeField] Toggle useAverageValue;
@@ -38,7 +37,6 @@ public class FGBudgetEntryController : MonoBehaviour
         this.budgetEntry = budgetEntry;
         this.onSave = onSave;
         
-        OnUseCategorySet(budgetEntry.UseCategory, true);
         OnCategorySet(budgetEntry.Category, false);
         
         OnUseAverageValueSet(budgetEntry.UseAverageValue);
@@ -74,8 +72,6 @@ public class FGBudgetEntryController : MonoBehaviour
         
         #region OnSelect/OnDeselect/OnSubmit
         
-        useCategory.onValueChanged.AddListener(newValue => OnUseCategorySet(newValue));
-        
         category.onSelect.AddListener(_ => currentField = category);
         category.onDeselect.AddListener(newValue => OnCategorySet(newValue, false));
         category.onSubmit.AddListener(_ => OnSubmit(true));
@@ -105,20 +101,6 @@ public class FGBudgetEntryController : MonoBehaviour
     }
     
     #region Setters
-    
-    void OnUseCategorySet(bool newValue, bool initializing  = false)
-    {
-        budgetEntry.UseCategory = newValue;
-        useCategory.SetIsOnWithoutNotify(budgetEntry.UseCategory);
-
-        useAverageValue.interactable = newValue;
-        if (!initializing) OnUseAverageValueSet(newValue);
-        RefreshBudgetEntryRow();
-            
-        onSave?.Invoke();
-
-        currentField = null;
-    }
 
     void OnCategorySet(string newValue, bool setMatchingCategory)
     {
@@ -137,8 +119,6 @@ public class FGBudgetEntryController : MonoBehaviour
         // category.textComponent.color = FGUtils.StringToColour(Entry.Category);
 
         bool hasCategory = FGManager.Instance.Database.Categories(false).Contains(newValue);
-        useCategory.interactable = hasCategory;
-        if (!hasCategory) OnUseCategorySet(false);
 
         if (categoryChanged)
         {
@@ -237,7 +217,7 @@ public class FGBudgetEntryController : MonoBehaviour
 
     void RefreshTotal()
     {
-        if (budgetEntry.UseCategory && budgetEntry.IsCost)
+        if (budgetEntry.IsCost)
         {
             var database = FGManager.Instance.Database;
             var amount = database.TotalForMonthByCategory(
@@ -246,8 +226,8 @@ public class FGBudgetEntryController : MonoBehaviour
             
             budgetEntry.CurrentValue = amount;
             
-            var formatted = FGUtils.FormatLargeNumber(budgetEntry.CurrentValue, true, FGUtils.POSITIVE, FGUtils.NEGATIVE, budgetEntry.ManualValue);
-            var formattedLeft = FGUtils.FormatLargeNumber(budgetEntry.ManualValue - budgetEntry.CurrentValue, true, FGUtils.NEGATIVE, FGUtils.POSITIVE, budgetEntry.ManualValue);
+            var formatted = FGUtils.FormatLargeNumber(budgetEntry.CurrentValue, true, FGUtils.POSITIVE, FGUtils.NEGATIVE, false, budgetEntry.ManualValue);
+            var formattedLeft = FGUtils.FormatLargeNumber(budgetEntry.ManualValue - budgetEntry.CurrentValue, true, FGUtils.NEGATIVE, FGUtils.POSITIVE, false, budgetEntry.ManualValue);
 
             total.text = $"{FGUtils.GetMonth(DateTime.Today.Month)} total = {formatted} ({formattedLeft} left)";
         }

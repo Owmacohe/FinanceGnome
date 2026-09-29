@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NativeFileBrowser;
@@ -143,10 +144,18 @@ public class FGBudgetScreenPanel : MonoBehaviour
         var incomeTotal = income.Sum(entry => entry.ManualValue);
         var essentialsTotal = costs.Where(entry => entry.Essential).Sum(entry => entry.ManualValue);
         var nonEssentialsTotal = costs.Where(entry => !entry.Essential).Sum(entry => entry.CurrentValue);
+        var nonBudgetTotal = FGManager.Instance.Database.TotalForMonth(DateTime.Today.Month, true, costs.Select(entry => entry.Category).ToList());
 
         calculations.text =
-            $"Monthly Budget\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal, true, FGUtils.POSITIVE, FGUtils.POSITIVE)}</b></align>\n" +
-            $"Monthly Budget\v(- Essentials)\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal - essentialsTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE)}</b></align>\n" +
-            $"Monthly Budget\v(- Essentials)\v(- non-Essentials)\v\v<align=center><b>{FGUtils.FormatLargeNumber(incomeTotal - essentialsTotal - nonEssentialsTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE)}</b></align>";
+            $"Monthly Budget = <b>{FGUtils.FormatLargeNumber(incomeTotal, true, FGUtils.POSITIVE, FGUtils.POSITIVE)}</b>\n" +
+            $"<b>{FGUtils.FormatLargeNumber(incomeTotal - essentialsTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE)}</b>\v" +
+                $"(- Essentials)<size=60%> <i>(fixed)</i></size>\n" +
+            $"<b>{FGUtils.FormatLargeNumber(incomeTotal - essentialsTotal - nonEssentialsTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE)}</b>\v" +
+                $"(- Essentials)<size=60%> <i>(fixed)</i></size>\v" +
+                $"(- non-Essentials)<size=60%> <i>(current)</i></size>\n" +
+            $"<b>{FGUtils.FormatLargeNumber(incomeTotal - essentialsTotal - nonEssentialsTotal - nonBudgetTotal, true, FGUtils.NEGATIVE, FGUtils.POSITIVE)}</b>\v" +
+                $"(- Essentials)<size=60%> <i>(fixed)</i></size>\v" +
+                $"(- non-Essentials)<size=60%> <i>(current)</i></size>\v" +
+                $"(- non-Budget Costs)<size=60%> <i>(current)</i></size>";
     }
 }

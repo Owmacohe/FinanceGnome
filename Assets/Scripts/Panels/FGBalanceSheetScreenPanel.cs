@@ -168,7 +168,8 @@ public class FGBalanceSheetScreenPanel : MonoBehaviour
                 balance,
                 true,
                 balance >= 0 ? FGUtils.POSITIVE_LOW : FGUtils.NEGATIVE_LOW,
-                balance >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE));
+                balance >= 0 ? FGUtils.POSITIVE : FGUtils.NEGATIVE,
+                true));
         }
         
         var weeklyTotal = manager.Database.ValueTotal / (manager.Database.TotalMonths() * (52f/12f));

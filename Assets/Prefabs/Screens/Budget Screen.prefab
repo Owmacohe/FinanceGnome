@@ -243,7 +243,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -10, y: 0}
-  m_SizeDelta: {x: 180, y: 0}
+  m_SizeDelta: {x: 250, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &5915644306853629027
 CanvasRenderer:
@@ -577,13 +577,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Monthly Budget\v\v<align=center><b>$100.00</b></align>
+  m_text: 'Monthly Budget = <b>$9,999.99</b>
 
-    Monthly Budget\v(-
-    Essentials)\v\v<align=center><b>$100.00</b></align>
+    <b>$9,999.99</b>\v(- Essentials)<size=60%>
+    <i>(fixed)</i></size>
 
-    Monthly Budget\v(- Essentials)\v(-
-    non-Essentials)\v\v<align=center><b>$100.00</b></align>'
+    <b>$9,999.99</b>\v(- Essentials)<size=60%> <i>(fixed)</i></size>\v(-
+    non-Essentials)<size=60%> <i>(current)</i></size>
+
+    <b>$9,999.99</b>\v(- Essentials)<size=60%>
+    <i>(fixed)</i></size>\v(- non-Essentials)<size=60%> <i>(current)</i></size>\v(-
+    non-Budget Costs)<size=60%> <i>(current)</i></size>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0e0262592b0137b42b191a8550b54661, type: 2}
   m_sharedMaterial: {fileID: -1743646374717134242, guid: 0e0262592b0137b42b191a8550b54661, type: 2}
@@ -610,8 +614,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14.8
-  m_fontSizeBase: 14.8
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1180,8 +1184,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -110.00003, y: 0}
-  m_SizeDelta: {x: -219.99994, y: 0}
+  m_AnchoredPosition: {x: -135.00003, y: 0}
+  m_SizeDelta: {x: -269.99994, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1203625877853112252
 CanvasRenderer:
