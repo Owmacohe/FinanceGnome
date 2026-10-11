@@ -5,6 +5,7 @@
 
 - Make use of the powerful Import Rule system to automatically categorize, adjust, and disable transactions as they are imported.
 - A cost/income spreadsheet is automatically calculated based on imported transactions.
+- A dynamically-updated and customizable budget sheet.
 - More to come!
 
 Finance Gnome uses the [Maple Mono](https://font.subf.dev) font.
